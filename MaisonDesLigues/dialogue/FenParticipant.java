@@ -20,6 +20,11 @@ import java.text.SimpleDateFormat;
 //permet d établir le lien avec la classe GestionDemandes
 import controle.GestionDemandes;
 import entite.*;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 public class FenParticipant extends JFrame {
 	private static final long serialVersionUID = 1L;
 	// propriété pour établir le lien avec la classe GestionDemandes
@@ -87,6 +92,9 @@ public class FenParticipant extends JFrame {
 	private JButton Btn_Rechercher = null;
 	private boolean estRechercher=false;
 	private JComboBox<String> cbx_catchambre_nuit2 = null;
+	private JMenuBar menuBar;
+	private JMenu menu;
+	private JMenu mnGestion;
 	private void regroupeboutons()
 	{
 		groupeboutons.add(radiobtn_licencie);
@@ -228,6 +236,7 @@ public class FenParticipant extends JFrame {
 	/** This method initializes this @return void */
 	private void initialize() {
 		this.setSize(810, 750);
+		setJMenuBar(getMenuBar_1());
 		this.setContentPane(getJContentPrincipal());
 		this.setTitle("Maison des Ligues : Inscription ");
 	}
@@ -989,6 +998,36 @@ public class FenParticipant extends JFrame {
 		}
 		return cbx_qualite_B;
 	}
-
-
+	private JMenuBar getMenuBar_1() {
+		if (menuBar == null) {
+			menuBar = new JMenuBar();
+			menuBar.add(getMenu());
+			menuBar.add(getMnGestion());
+		}
+		return menuBar;
+	}
+	private JMenu getMenu() {
+		if (menu == null) {
+			menu = new JMenu("Accueil");
+		}
+		return menu;
+	}
+	private JMenu getMnGestion() {
+		if (mnGestion == null) {
+			mnGestion = new JMenu("Gestion");
+			
+			JMenuItem mntmAjout = new JMenuItem("Ajout");
+			mntmAjout.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					
+				}
+			});
+			mnGestion.add(mntmAjout);
+			
+			JMenuItem mntmModification = new JMenuItem("Modification");
+			mnGestion.add(mntmModification);
+		}
+		return mnGestion;
+	}
 }  //  @jve:decl-index=0:visual-constraint="16,5"
