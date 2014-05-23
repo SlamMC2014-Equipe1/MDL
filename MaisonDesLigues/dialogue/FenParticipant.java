@@ -20,6 +20,13 @@ import java.text.SimpleDateFormat;
 //permet d établir le lien avec la classe GestionDemandes
 import controle.GestionDemandes;
 import entite.*;
+import javax.swing.JTextPane;
+import javax.swing.JTextArea;
+import java.awt.Font;
+import java.util.ArrayList;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JFormattedTextField;
 public class FenParticipant extends JFrame {
 	private static final long serialVersionUID = 1L;
 	// propriété pour établir le lien avec la classe GestionDemandes
@@ -87,6 +94,20 @@ public class FenParticipant extends JFrame {
 	private JButton Btn_Rechercher = null;
 	private boolean estRechercher=false;
 	private JComboBox<String> cbx_catchambre_nuit2 = null;
+	private int nombreDeChoix=0;
+	private JCheckBox Choix1 = new JCheckBox();
+	private JCheckBox Choix2 = new JCheckBox();
+	private JCheckBox Choix3 = new JCheckBox();
+	private JCheckBox Choix4 = new JCheckBox();
+	private JCheckBox Choix5 = new JCheckBox();
+	private JCheckBox Choix6 = new JCheckBox();
+	private JRadioButton btn_Accompagnant_Oui= new JRadioButton();
+	private JRadioButton btn_Accompagnant_Non = new JRadioButton();
+	private JPanel jChoixAccompagnant;
+	private ButtonGroup groupeAccompagnant = new ButtonGroup();
+
+
+	
 	private void regroupeboutons()
 	{
 		groupeboutons.add(radiobtn_licencie);
@@ -99,6 +120,9 @@ public class FenParticipant extends JFrame {
 		groupeOuiNon.add(radiobtn_Oui);
 		groupeOuiNon.add(radiobtn_Non);
 		groupeOuiNon.clearSelection();
+		groupeAccompagnant.add(btn_Accompagnant_Oui);
+		groupeAccompagnant.add(btn_Accompagnant_Non);
+		groupeAccompagnant.clearSelection();
 	}
 	private void enregistrerintervenant(){
 		int numatelier=Integer.parseInt(""+((String)cbx_atelier.getSelectedItem()).charAt(0));
@@ -227,7 +251,7 @@ public class FenParticipant extends JFrame {
 	}
 	/** This method initializes this @return void */
 	private void initialize() {
-		this.setSize(810, 750);
+		this.setSize(810, 870);
 		this.setContentPane(getJContentPrincipal());
 		this.setTitle("Maison des Ligues : Inscription ");
 	}
@@ -237,16 +261,16 @@ public class FenParticipant extends JFrame {
 			// mise en forme de la fenetre
 			jContentPrincipal = new JPanel();
 			jContentPrincipal.setLayout(null);
-			jContentPrincipal.add(getjContentChoixParticipant(), null);
-			jContentPrincipal.add(getjContentIdentite(), null);
-			jContentPrincipal.add(getjContentInscriptionIntervenant(), null);
-			jContentPrincipal.add(getjContentInscriptionBenevole(), null);
-			jContentPrincipal.add(getjContentInscriptionLicencie(), null);
-			jContentPrincipal.add(getBtn_quitter(), null);
-			jContentPrincipal.add(getBtn_embaucher(), null);
-			jContentPrincipal.add(getBtn_ok(), null);
-			jContentPrincipal.add(getBtn_annuler(), null);
-			jContentPrincipal.add(getBtn_Rechercher(), null);
+			jContentPrincipal.add(getjContentInscriptionLicencie());
+			jContentPrincipal.add(getjContentInscriptionIntervenant());
+			jContentPrincipal.add(getjContentInscriptionBenevole());
+			jContentPrincipal.add(getjContentChoixParticipant());
+			jContentPrincipal.add(getjContentIdentite());
+			jContentPrincipal.add(getBtn_quitter());
+			jContentPrincipal.add(getBtn_embaucher());
+			jContentPrincipal.add(getBtn_ok());
+			jContentPrincipal.add(getBtn_annuler());
+			jContentPrincipal.add(getBtn_Rechercher());
 			regroupeboutons();
 			btn_embaucher.setEnabled(false);
 			Btn_Rechercher.setEnabled(false);
@@ -255,6 +279,7 @@ public class FenParticipant extends JFrame {
 			jContentInscriptionIntervenant.setVisible(false);
 			jContentInscriptionBenevole.setVisible(false);
 			jContentInscriptionLicencie.setVisible(false);
+			
 
 		}
 		return jContentPrincipal;
@@ -262,11 +287,11 @@ public class FenParticipant extends JFrame {
 	private JPanel getjContentIdentite() {
 		if (jContentIdentite == null) {
 			jContentIdentite = new JPanel();
+			jContentIdentite.setBounds(11, 56, 750, 220);
 			jContentIdentite.setLayout(null);
 			jContentIdentite.setLayout(null);
 			Border Bord = BorderFactory.createTitledBorder(" Identité du Participant ");
 			jContentIdentite.setBorder(Bord);
-			jContentIdentite.setBounds(new Rectangle(1, 60, 750, 220));
 			jLabel_nom = new JLabel();
 			jLabel_nom.setBounds(new Rectangle(10, 20, 100, 30));
 			jLabel_nom.setText("Nom ");
@@ -306,25 +331,25 @@ public class FenParticipant extends JFrame {
 	private JPanel getjContentInscriptionLicencie() {
 		if (jContentInscriptionLicencie == null) {
 			jContentInscriptionLicencie = new JPanel();
+			jContentInscriptionLicencie.setBounds(1, 280, 783, 490);
 			jContentInscriptionLicencie.setLayout(null);
 			jContentInscriptionLicencie.setLayout(null);
 			Border Bord = BorderFactory.createTitledBorder(" Complément sur l'inscription du Licencié ");
 			jContentInscriptionLicencie.setBorder(Bord);
-			jContentInscriptionLicencie.setBounds(new Rectangle(1, 280, 750, 270));
 			jLabel_nolicence = new JLabel();
-			jLabel_nolicence.setBounds(new Rectangle(5, 20, 100, 30));
+			jLabel_nolicence.setBounds(new Rectangle(15, 20, 100, 30));
 			jLabel_nolicence.setText("Numero licence ");
 			jLabel_idqualite = new JLabel();
-			jLabel_idqualite.setBounds(new Rectangle(250, 20, 75, 30));
+			jLabel_idqualite.setBounds(new Rectangle(285, 20, 75, 30));
 			jLabel_idqualite.setText("Fonction ");
 			jLabel_dteins = new JLabel();
-			jLabel_dteins.setBounds(new Rectangle(5, 60, 100, 30));
-			jLabel_dteins.setText("Date Inscription");
+			jLabel_dteins.setBounds(new Rectangle(15, 122, 100, 30));
+			jLabel_dteins.setText("Choix d'ateliers");
 			jLabel_dtearr = new JLabel();
-			jLabel_dtearr.setBounds(new Rectangle(300, 60, 100, 30));
+			jLabel_dtearr.setBounds(new Rectangle(285, 60, 100, 30));
 			jLabel_dtearr.setText("Date Arrivée ");
 			jLabel_clewifi = new JLabel();
-			jLabel_clewifi.setBounds(new Rectangle(550, 60, 50, 30));
+			jLabel_clewifi.setBounds(new Rectangle(513, 60, 50, 30));
 			jLabel_clewifi.setText("Clé Wifi ");
 			jContentInscriptionLicencie.add(jLabel_dteins, null);
 			jContentInscriptionLicencie.add(jLabel_idqualite, null);
@@ -336,19 +361,50 @@ public class FenParticipant extends JFrame {
 			jContentInscriptionLicencie.add(getTxt_dteinsc(), null);
 			jContentInscriptionLicencie.add(getTxt_dtearr(), null);
 			jContentInscriptionLicencie.add(getCbx_qualite(), null);
-			jContentInscriptionIntervenant.add(getjContentNuitée(),null);
-	
+			jContentInscriptionLicencie.add(getChoix1());
+			jContentInscriptionLicencie.add(getChoix2());
+			jContentInscriptionLicencie.add(getChoix3());
+			jContentInscriptionLicencie.add(getChoix4());
+			jContentInscriptionLicencie.add(getChoix5());
+			jContentInscriptionLicencie.add(getChoix6());
+			jContentInscriptionLicencie.add(getjContentNuitée(),null);
+
+			
+			
+			
+
+			
+			JLabel label = new JLabel();
+			label.setText("Date Inscription");
+			label.setBounds(new Rectangle(5, 60, 100, 30));
+			label.setBounds(15, 68, 100, 30);
+			jContentInscriptionLicencie.add(label);
+			
+			JButton btnNewButton = new JButton("G\u00E9n\u00E9rer\r\n");
+			btnNewButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					getTxt_clewifi().setText(generate(8));
+				}
+			});
+			btnNewButton.setBounds(679, 64, 89, 23);
+			jContentInscriptionLicencie.add(btnNewButton);
+
+			
 		}
 		return jContentInscriptionLicencie;
 	}
+	
+
+		
+	
 	private JPanel getjContentInscriptionBenevole() {
 		if (jContentInscriptionBenevole == null) {
 			jContentInscriptionBenevole = new JPanel();
+			jContentInscriptionBenevole.setBounds(1, 280, 750, 270);
 			jContentInscriptionBenevole.setLayout(null);
 			jContentInscriptionBenevole.setLayout(null);
 			Border Bord = BorderFactory.createTitledBorder(" Complément sur l'inscription du Bénévole ");
 			jContentInscriptionBenevole.setBorder(Bord);
-			jContentInscriptionBenevole.setBounds(new Rectangle(1, 280, 750, 270));
 			jLabel_idqualite = new JLabel();
 			jLabel_idqualite.setBounds(new Rectangle(250, 20, 75, 30));
 			jLabel_idqualite.setText("Fonction ");
@@ -370,11 +426,11 @@ public class FenParticipant extends JFrame {
 	private JPanel getjContentInscriptionIntervenant() {
 		if (jContentInscriptionIntervenant == null) {
 			jContentInscriptionIntervenant = new JPanel();
+			jContentInscriptionIntervenant.setBounds(1, 280, 750, 270);
 			jContentInscriptionIntervenant.setLayout(null);
 			jContentInscriptionIntervenant.setLayout(null);
 			Border Bord = BorderFactory.createTitledBorder(" Complément sur l'inscription de l'intervenant ");
 			jContentInscriptionIntervenant.setBorder(Bord);
-			jContentInscriptionIntervenant.setBounds(new Rectangle(1, 280, 750, 270));
 			jLabel_atelier = new JLabel();
 			jLabel_atelier.setBounds(new Rectangle(5, 20, 100, 30));
 			jLabel_atelier.setText("Choix de l'atelier ");
@@ -382,7 +438,7 @@ public class FenParticipant extends JFrame {
 			jContentInscriptionIntervenant.add(getRadiobtn_AnimateurNon(), null);
 			jContentInscriptionIntervenant.add(jLabel_atelier, null);
 			jContentInscriptionIntervenant.add(getcbx_atelier(), null);
-			jContentInscriptionIntervenant.add(getjContentNuitée(),null);
+			//jContentInscriptionIntervenant.add(getjContentNuitée(),null);
 		}
 		return jContentInscriptionIntervenant;
 	}
@@ -392,25 +448,70 @@ public class FenParticipant extends JFrame {
 			jContentNuitée.setLayout(null);
 			Border Bord = BorderFactory.createTitledBorder(" Nuitée(s)");
 			jContentNuitée.setBorder(Bord);
-			jContentNuitée.setBounds(new Rectangle(10, 100, 700, 150));
+			jContentNuitée.setBounds(new Rectangle(15, 222, 700, 257));
+			
+
 			jContentNuitée.add(getRadiobtn_HotelOui(), null);
 			jContentNuitée.add(getRadiobtn_HotelNon(), null);
 			jContentNuitée.add(getjContentHotel(), null);
+			
+			jContentNuitée.add(getRadiobtn_AccompagnantOui());
+			
+
+			jContentNuitée.add(getRadiobtn_AccompagnantNon());
+			jContentNuitée.add(getChoixAccompagnant());
+			jChoixAccompagnant.setVisible(false);
+			JLabel lblAccompagnant = new JLabel();
+			lblAccompagnant.setText("Accompagnant");
+			lblAccompagnant.setBounds(new Rectangle(10, 140, 100, 30));
+			lblAccompagnant.setBounds(424, -11, 100, 30);
+			jContentNuitée.add(lblAccompagnant);
 			jContentHotel.setVisible(false);
 		}
 		return jContentNuitée;
 	}
 	
+	private JPanel getChoixAccompagnant(){
+		jChoixAccompagnant = new JPanel();
+		jChoixAccompagnant.setBounds(434, 46, 256, 200);
+		jChoixAccompagnant.setLayout(null);
+		
+		JLabel lblSamedi = new JLabel("Samedi");
+		lblSamedi.setBounds(10, 11, 46, 14);
+		jChoixAccompagnant.add(lblSamedi);
+		
+		JCheckBox chckbxDjeuner = new JCheckBox("D\u00E9jeuner");
+		chckbxDjeuner.setBounds(10, 32, 97, 23);
+		jChoixAccompagnant.add(chckbxDjeuner);
+		
+		JCheckBox chckbxDner = new JCheckBox("D\u00EEner");
+		chckbxDner.setBounds(109, 32, 97, 23);
+		jChoixAccompagnant.add(chckbxDner);
+		
+		JLabel lblDimanche = new JLabel("Dimanche");
+		lblDimanche.setBounds(10, 85, 74, 14);
+		jChoixAccompagnant.add(lblDimanche);
+		
+		JCheckBox chckbxDejeuner = new JCheckBox("D\u00E9jeuner");
+		chckbxDejeuner.setBounds(10, 106, 97, 23);
+		jChoixAccompagnant.add(chckbxDejeuner);
+
+		
+		return jChoixAccompagnant;
+	}
+	
+	
+
 	private JPanel getjContentHotel() {
 		if (jContentHotel == null) {
 			jContentHotel = new JPanel();
 			jContentHotel.setLayout(null);
-			jContentHotel.setBounds(new Rectangle(10, 40, 680, 100));
+			jContentHotel.setBounds(new Rectangle(10, 57, 413, 189));
 			jlabel_idnuit_un = new JLabel();
-			jlabel_idnuit_un.setBounds(new Rectangle(30, 30,250, 30));
+			jlabel_idnuit_un.setBounds(new Rectangle(30, 11, 250, 30));
 			jlabel_idnuit_un.setText("Nuit du Vendredi 12 Septembre 2014 ");
 			jlabel_idnuit_deux = new JLabel();
-			jlabel_idnuit_deux.setBounds(new Rectangle(30, 70, 250, 30));
+			jlabel_idnuit_deux.setBounds(new Rectangle(30, 102, 250, 30));
 			jlabel_idnuit_deux.setText("Nuit du Samedi 13 Septembre 2014 ");
 			jContentHotel.add(jlabel_idnuit_un, null);
 			jContentHotel.add(jlabel_idnuit_deux, null);
@@ -427,10 +528,10 @@ public class FenParticipant extends JFrame {
 	private JPanel getjContentChoixParticipant() {
 		if (jContentChoixParticipant == null) {
 			jContentChoixParticipant = new JPanel();
+			jContentChoixParticipant.setBounds(10, 11, 500, 59);
 			jContentChoixParticipant.setLayout(null);
 			Border Bord = BorderFactory.createTitledBorder(" Type de Participant ");
 			jContentChoixParticipant.setBorder(Bord);
-			jContentChoixParticipant.setBounds(new Rectangle(1, 1, 500, 59));
 			jContentChoixParticipant.add(getRadiobtn_Intervenant(), null);
 			jContentChoixParticipant.add(getRadiobtn_licencie(), null);
 			jContentChoixParticipant.add(getRadiobtn_Benevole(), null);
@@ -441,7 +542,7 @@ public class FenParticipant extends JFrame {
 	private JButton getBtn_quitter() {
 		if (btn_quitter == null) {
 			btn_quitter = new JButton();
-			btn_quitter.setBounds(new Rectangle(451, 600, 110, 40));
+			btn_quitter.setBounds(472, 781, 110, 40);
 			btn_quitter.setText("Quitter");
 			btn_quitter.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) 
@@ -464,7 +565,7 @@ public class FenParticipant extends JFrame {
 	private JRadioButton getRadiobtn_Benevole() {
 		if (radiobtn_Benevole == null) {
 			radiobtn_Benevole = new JRadioButton();
-			radiobtn_Benevole.setBounds(new Rectangle(200,20, 102, 30));
+			radiobtn_Benevole.setBounds(new Rectangle(198, 20, 102, 30));
 			radiobtn_Benevole.setText("Bénévole");
 			radiobtn_Benevole.setVisible(true);
 			radiobtn_Benevole.addActionListener(new java.awt.event.ActionListener() {
@@ -503,6 +604,37 @@ public class FenParticipant extends JFrame {
 		}
 		return radiobtn_Non;
 	}
+		
+	private JRadioButton getRadiobtn_AccompagnantOui(){
+		btn_Accompagnant_Oui = new JRadioButton();
+		btn_Accompagnant_Oui.setText("Oui");
+		btn_Accompagnant_Oui.setBounds(new Rectangle(10, 20, 80, 30));
+		btn_Accompagnant_Oui.setBounds(424, 20, 80, 30);
+		btn_Accompagnant_Oui.addActionListener(new java.awt.event.ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent e) {
+			jChoixAccompagnant.setVisible(true);
+			}
+		});
+		
+		return btn_Accompagnant_Oui;
+	}
+	
+	
+	private JRadioButton getRadiobtn_AccompagnantNon(){
+		btn_Accompagnant_Non = new JRadioButton();
+		btn_Accompagnant_Non.setText("Non");
+		btn_Accompagnant_Non.setBounds(new Rectangle(100, 20, 100, 30));
+		btn_Accompagnant_Non.setBounds(544, 20, 100, 30);
+		btn_Accompagnant_Non.addActionListener(new java.awt.event.ActionListener() {
+		public void actionPerformed(java.awt.event.ActionEvent e) {
+			jChoixAccompagnant.setVisible(false);
+			}
+		});
+		return btn_Accompagnant_Non;
+		
+	}
+	
+
 	private JRadioButton getRadiobtn_AnimateurOui() {
 		if (radiobtn_Animateur == null) {
 			radiobtn_Animateur = new JRadioButton();
@@ -565,7 +697,7 @@ public class FenParticipant extends JFrame {
 	private JButton getBtn_embaucher() {
 		if (btn_embaucher == null) {
 			btn_embaucher = new JButton();
-			btn_embaucher.setBounds(new Rectangle(350, 600, 110, 40));
+			btn_embaucher.setBounds(366, 781, 110, 40);
 			btn_embaucher.setText("Etre Benevole");
 			btn_embaucher.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -584,7 +716,7 @@ public class FenParticipant extends JFrame {
 	private JButton getBtn_ok() {
 		if (btn_ok == null) {
 			btn_ok = new JButton();
-			btn_ok.setBounds(new Rectangle(250, 600, 110, 40));
+			btn_ok.setBounds(258, 781, 110, 40);
 			btn_ok.setText("Enregistrer");
 			btn_ok.setVisible(false);
 			btn_ok.addActionListener(new java.awt.event.ActionListener() {
@@ -681,7 +813,7 @@ public class FenParticipant extends JFrame {
 	private JButton getBtn_annuler() {
 		if (btn_annuler == null) {
 			btn_annuler = new JButton();
-			btn_annuler.setBounds(new Rectangle(150, 600, 110, 40));
+			btn_annuler.setBounds(150, 781, 110, 40);
 			btn_annuler.setText("Annuler");
 			btn_annuler.setVisible(false);
 			btn_annuler.addActionListener(new java.awt.event.ActionListener() {
@@ -757,7 +889,7 @@ public class FenParticipant extends JFrame {
 	private JCheckBox getCheck_Nuitdu12() {
 		if (check_Nuitdu12 == null) {
 			check_Nuitdu12 = new JCheckBox();
-			check_Nuitdu12.setBounds(new Rectangle(10, 33, 21, 21));
+			check_Nuitdu12.setBounds(new Rectangle(10, 13, 21, 21));
 			check_Nuitdu12.setVisible(true);
 		}
 		check_Nuitdu12.addItemListener(new java.awt.event.ItemListener() {
@@ -773,7 +905,7 @@ public class FenParticipant extends JFrame {
 	private JCheckBox getCheck_Nuitdu13() {
 		if (check_Nuitdu13 == null) {
 			check_Nuitdu13 = new JCheckBox();
-			check_Nuitdu13.setBounds(new Rectangle(10, 73, 21, 21));
+			check_Nuitdu13.setBounds(new Rectangle(6, 105, 21, 21));
 			check_Nuitdu13.setVisible(true);
 		}
 		return check_Nuitdu13;
@@ -782,7 +914,8 @@ public class FenParticipant extends JFrame {
 	private JTextField getTxt_clewifi() {
 		if (txt_clewifi == null) {
 			txt_clewifi = new JTextField();
-			txt_clewifi.setBounds(new Rectangle(620, 60, 110, 30));
+			txt_clewifi.setEditable(false);
+			txt_clewifi.setBounds(new Rectangle(559, 60, 110, 30));
 		}
 		return txt_clewifi;
 		
@@ -802,7 +935,7 @@ public class FenParticipant extends JFrame {
 	private JTextField getTxt_dtearr() {
 		if (txt_dtearr == null) {
 			txt_dtearr = new JTextField();
-			txt_dtearr.setBounds(new Rectangle(450, 60, 100, 30));
+			txt_dtearr.setBounds(new Rectangle(370, 60, 100, 30));
 			java.util.Date maDate=new java.util.Date();
 			SimpleDateFormat dateStandard = new SimpleDateFormat("dd/MM/yyyy");
 			txt_dtearr.setText(dateStandard.format(maDate));
@@ -855,7 +988,7 @@ public class FenParticipant extends JFrame {
 	private JComboBox<String> getcbx_hotel_nuit2() {
 		if (cbx_hotel_nuit2 == null) {
 			cbx_hotel_nuit2 = new JComboBox<String>();
-			cbx_hotel_nuit2.setBounds(new Rectangle(250, 70, 300, 30));
+			cbx_hotel_nuit2.setBounds(new Rectangle(6, 135, 300, 30));
 			GestHotelList listeHotel=gestionBD.chargeHotel();
 			int taille = listeHotel.Nbelement();
 			cbx_hotel_nuit2.setMaximumRowCount(taille);
@@ -874,7 +1007,7 @@ public class FenParticipant extends JFrame {
 	private JComboBox<String> getcbx_hotel_nuit1() {
 		if (cbx_hotel_nuit1 == null) {
 			cbx_hotel_nuit1 = new JComboBox<String>();
-			cbx_hotel_nuit1.setBounds(new Rectangle(250, 30, 300, 30));
+			cbx_hotel_nuit1.setBounds(new Rectangle(6, 45, 300, 30));
 			GestHotelList listeHotel=gestionBD.chargeHotel();
 			int taille = listeHotel.Nbelement();
 			cbx_hotel_nuit1.setMaximumRowCount(taille);
@@ -888,7 +1021,7 @@ public class FenParticipant extends JFrame {
 	private JComboBox<String> getcbx_catchambre_nuit2() {
 		if (cbx_catchambre_nuit2 == null) {
 			cbx_catchambre_nuit2 = new JComboBox<String>();
-			cbx_catchambre_nuit2.setBounds(new Rectangle(560, 70, 100, 30));
+			cbx_catchambre_nuit2.setBounds(new Rectangle(307, 135, 100, 30));
 			GestCategorieList listeChambre=gestionBD.chargeCategorie();
 			int taille = listeChambre.Nbelement();
 			cbx_catchambre_nuit2.setMaximumRowCount(taille);
@@ -907,7 +1040,7 @@ public class FenParticipant extends JFrame {
 	private JComboBox<String> getcbx_catchambre_nuit1() {
 		if (cbx_catchambre_nuit1 == null) {
 			cbx_catchambre_nuit1 = new JComboBox<String>();
-			cbx_catchambre_nuit1.setBounds(new Rectangle(560, 30, 100, 30));
+			cbx_catchambre_nuit1.setBounds(new Rectangle(307, 45, 100, 30));
 			GestCategorieList listeChambre=gestionBD.chargeCategorie();
 			int taille = listeChambre.Nbelement();
 			cbx_catchambre_nuit1.setMaximumRowCount(taille);
@@ -926,7 +1059,7 @@ public class FenParticipant extends JFrame {
 	private JTextField getTxt_nolicence() {
 		if (txt_nolicence == null) {
 			txt_nolicence = new JTextField();
-			txt_nolicence.setBounds(new Rectangle(110, 20, 110, 30));
+			txt_nolicence.setBounds(new Rectangle(130, 20, 110, 30));
 		}
 		return txt_nolicence;
 	}
@@ -953,7 +1086,7 @@ public class FenParticipant extends JFrame {
 	private JButton getBtn_Rechercher() {
 		if (Btn_Rechercher == null) {
 			Btn_Rechercher = new JButton();
-			Btn_Rechercher.setBounds(new Rectangle(50, 600, 110, 40));
+			Btn_Rechercher.setBounds(41, 781, 110, 40);
 			Btn_Rechercher.setText("Rechercher");
 			Btn_Rechercher.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -989,6 +1122,139 @@ public class FenParticipant extends JFrame {
 		}
 		return cbx_qualite_B;
 	}
+	
+
+	private JCheckBox getChoix1(){			
+		listeAtel=gestionBD.chargeAtelier();
+		Choix1 = new JCheckBox(listeAtel.elt(0).getLibelleatelier());
+		Choix1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				modifierNombreChoix(Choix1);
+				gererCheckbox(Choix2);
+				gererCheckbox(Choix3);
+				gererCheckbox(Choix4);
+				gererCheckbox(Choix5);
+				gererCheckbox(Choix6);
+				}
+			}
+		);
+		Choix1.setBounds(15, 151, 233, 23);
+		return Choix1;
+	}
+	private JCheckBox getChoix2(){			
+		listeAtel=gestionBD.chargeAtelier();
+		Choix2 = new JCheckBox(listeAtel.elt(1).getLibelleatelier());
+		Choix2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				modifierNombreChoix(Choix2);
+				gererCheckbox(Choix3);
+				gererCheckbox(Choix1);
+				gererCheckbox(Choix4);
+				gererCheckbox(Choix5);
+				gererCheckbox(Choix6);
+				}
+			}
+		);
+		Choix2.setBounds(15, 177, 233, 23);
+		return Choix2;
+	}
+
+	private JCheckBox getChoix3(){			
+		listeAtel=gestionBD.chargeAtelier();
+		Choix3 = new JCheckBox(listeAtel.elt(2).getLibelleatelier());
+		Choix3.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				modifierNombreChoix(Choix3);
+				gererCheckbox(Choix2);
+				gererCheckbox(Choix1);
+				gererCheckbox(Choix4);
+				gererCheckbox(Choix5);
+				gererCheckbox(Choix6);
+				}
+			}
+		);
+		Choix3.setBounds(248, 151, 233, 23);
+		return Choix3;
+	}
+	private JCheckBox getChoix4(){			
+		listeAtel=gestionBD.chargeAtelier();
+		Choix4 = new JCheckBox(listeAtel.elt(3).getLibelleatelier());
+		Choix4.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				modifierNombreChoix(Choix4);
+				gererCheckbox(Choix2);
+				gererCheckbox(Choix3);
+				gererCheckbox(Choix1);
+				gererCheckbox(Choix5);
+				gererCheckbox(Choix6);
+				}
+			}
+		);
+		Choix4.setBounds(248, 177, 190, 23);
+		return Choix4;
+	}
+	private JCheckBox getChoix5(){			
+		listeAtel=gestionBD.chargeAtelier();
+		Choix5 = new JCheckBox(listeAtel.elt(4).getLibelleatelier());
+		Choix5.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				modifierNombreChoix(Choix5);
+				gererCheckbox(Choix2);
+				gererCheckbox(Choix3);
+				gererCheckbox(Choix4);
+				gererCheckbox(Choix1);
+				gererCheckbox(Choix6);
+				}
+			}
+		);
+		Choix5.setBounds(513, 151, 156, 23);
+		return Choix5;
+	}
+	private JCheckBox getChoix6(){			
+		listeAtel=gestionBD.chargeAtelier();
+		Choix6 = new JCheckBox(listeAtel.elt(5).getLibelleatelier());
+		Choix6.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				modifierNombreChoix(Choix6);
+				gererCheckbox(Choix2);
+				gererCheckbox(Choix3);
+				gererCheckbox(Choix4);
+				gererCheckbox(Choix5);
+				gererCheckbox(Choix1);
+				}
+			}
+		);
+		Choix6.setBounds(513, 177, 156, 23);
+		return Choix6;
+	}
 
 
+		
+		private void modifierNombreChoix(JCheckBox checkbox){
+			if (checkbox.isSelected()){
+				nombreDeChoix++;
+			}
+			else{
+				nombreDeChoix--;
+			}
+	}
+		
+		private void gererCheckbox(JCheckBox checkbox){
+			if (nombreDeChoix==5 && !checkbox.isSelected()){
+					checkbox.setEnabled(false);
+			}
+			else if (nombreDeChoix<5 && !checkbox.isEnabled()){
+				checkbox.setEnabled(true);
+				
+			}
+		}
+		public static String generate(int length) {
+	        String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"; 
+	        StringBuffer pass = new StringBuffer();
+	        for(int x=0;x<length;x++)   {
+	           int i = (int)Math.floor(Math.random() * (chars.length() -1));
+	           pass.append(chars.charAt(i));
+	        }
+	        return pass.toString();
+	}
 }  //  @jve:decl-index=0:visual-constraint="16,5"
