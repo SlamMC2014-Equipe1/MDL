@@ -539,14 +539,6 @@ public class JContentInscription extends JPanel {
 			btn_quitter.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) 
 				{
-					// Recopie des collections dans la base de données
-					if (gestionBD.majAtelier(listeAtel))
-					{	
-						System.out.println("mise a jour de la base effectuée");
-					}
-					FenParticipant.this.dispose() ;
-	//				controle.ControleConnexion.getControleConnexion().fermetureSession();
-					System.exit(0);
 
 				}
 			});
