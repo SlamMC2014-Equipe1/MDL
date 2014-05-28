@@ -19,7 +19,7 @@ public class FenParticipant extends JFrame {
 	private static final long serialVersionUID = 1L;
 	// propriété pour établir le lien avec la classe GestionDemandes
 	private GestionDemandes gestionBD = new GestionDemandes();  
-	private JPanel jContentInscription = null;
+	private JContentInscription jContentInscription = null;
 	
 	private JMenuBar menuBar;
 	private JMenu menu;
@@ -96,11 +96,13 @@ public class FenParticipant extends JFrame {
 			mntmQuitter.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					// Recopie des collections dans la base de données
-					if (gestionBD.majAtelier(listeAtel))
-					{	
-						System.out.println("mise a jour de la base effectuée");
+					if (!jContentInscription.getListeAtel().equals(null)) {
+						if (gestionBD.majAtelier(jContentInscription.getListeAtel()))
+						{	
+							System.out.println("mise a jour de la base effectuée");
+						}
 					}
-					FenParticipant.this.dispose() ;
+					FenParticipant.this.dispose();
 	//				controle.ControleConnexion.getControleConnexion().fermetureSession();
 					System.exit(0);
 				}

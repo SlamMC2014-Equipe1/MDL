@@ -68,10 +68,6 @@ public class FenModification extends JPanel {
 		JButton btnAnnuler = new JButton("Annuler");
 		btnAnnuler.setBounds(142, 277, 89, 42);
 		add(btnAnnuler);
-		
-
-		
-
 	}
 	
 	private JComboBox<String> getCbx_ateliers() {

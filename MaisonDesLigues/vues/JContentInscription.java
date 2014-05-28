@@ -41,7 +41,6 @@ public class JContentInscription extends JPanel {
 	private JPanel jContentInscriptionLicencie = null;
 	private JPanel jContentNuitée = null;
 	private JPanel jContentHotel = null;
-	private JButton btn_quitter = null;
 	private GestAtelierList listeAtel;
 	private ButtonGroup groupeboutons = new ButtonGroup(); 
 	private JRadioButton radiobtn_Intervenant = null;
@@ -119,7 +118,6 @@ public class JContentInscription extends JPanel {
 		add(getjContentInscriptionBenevole());
 		add(getjContentChoixParticipant());
 		add(getjContentIdentite());
-		add(getBtn_quitter());
 		add(getBtn_embaucher());
 		add(getBtn_ok());
 		add(getBtn_annuler());
@@ -185,7 +183,7 @@ public class JContentInscription extends JPanel {
 			}
 		}
 		JOptionPane.showMessageDialog(null, "Inscription Intervenant effectuée.",
-				"", JOptionPane.ERROR_MESSAGE);
+				"", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	private void enregistrerlicencie(){
@@ -274,6 +272,10 @@ public class JContentInscription extends JPanel {
 			return(false);
 		}
 		return(true);
+	}
+	
+	public GestAtelierList getListeAtel() {
+		return this.listeAtel;
 	}
 	
 	private JPanel getjContentIdentite() {
@@ -528,22 +530,6 @@ public class JContentInscription extends JPanel {
 			jContentChoixParticipant.add(getRadiobtn_Benevole(), null);
 		}
 		return jContentChoixParticipant;
-	}
-	
-	/*** This method initializes btn_quitter@return javax.swing.JButton	 */
-	private JButton getBtn_quitter() {
-		if (btn_quitter == null) {
-			btn_quitter = new JButton();
-			btn_quitter.setBounds(472, 781, 110, 40);
-			btn_quitter.setText("Quitter");
-			btn_quitter.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) 
-				{
-
-				}
-			});
-		}
-		return btn_quitter;
 	}
 	
 	/*** This method initializes radiobtn_Intervenant @return javax.swing.JRadioButton*/

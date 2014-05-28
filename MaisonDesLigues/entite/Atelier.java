@@ -8,7 +8,7 @@ public class Atelier
 	// constructeur
 	public Atelier(Integer wnoat,Integer wnoint,String wlib, Integer wnbplace)	{
 		noatelier = wnoat;
-		nointervenant = wnoint;
+		nointervenant = wnoint == 0 ? null : wnoint;
 		libelleatelier = wlib;
 		maxplace = wnbplace;
 	}
