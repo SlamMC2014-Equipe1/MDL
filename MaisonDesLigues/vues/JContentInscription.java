@@ -365,6 +365,7 @@ public class JContentInscription extends JPanel {
 			jContentInscriptionLicencie.add(getChoix5());
 			jContentInscriptionLicencie.add(getChoix6());
 			jContentInscriptionLicencie.add(getjContentNuitée(),null);
+			jContentInscriptionLicencie.add(getjContentAccompagnant(),null);
 
 			
 			
@@ -444,24 +445,12 @@ public class JContentInscription extends JPanel {
 			jContentNuitée.setLayout(null);
 			Border Bord = BorderFactory.createTitledBorder(" Nuitée(s)");
 			jContentNuitée.setBorder(Bord);
-			jContentNuitée.setBounds(new Rectangle(15, 222, 700, 257));
+			jContentNuitée.setBounds(new Rectangle(15, 222, 431, 257));
 			
 
 			jContentNuitée.add(getRadiobtn_HotelOui(), null);
 			jContentNuitée.add(getRadiobtn_HotelNon(), null);
 			jContentNuitée.add(getjContentHotel(), null);
-			
-			jContentNuitée.add(getRadiobtn_AccompagnantOui());
-			
-
-			jContentNuitée.add(getRadiobtn_AccompagnantNon());
-			jContentNuitée.add(getChoixAccompagnant());
-			jChoixAccompagnant.setVisible(false);
-			JLabel lblAccompagnant = new JLabel();
-			lblAccompagnant.setText("Accompagnant");
-			lblAccompagnant.setBounds(new Rectangle(10, 140, 100, 30));
-			lblAccompagnant.setBounds(424, -11, 100, 30);
-			jContentNuitée.add(lblAccompagnant);
 			jContentHotel.setVisible(false);
 		}
 		return jContentNuitée;
@@ -471,28 +460,22 @@ public class JContentInscription extends JPanel {
 		if (jContentAccompagnant == null) {
 			jContentAccompagnant = new JPanel();
 			jContentAccompagnant.setLayout(null);
-			Border Bord = BorderFactory.createTitledBorder(" Accompagnant(s)");
+			Border Bord = BorderFactory.createTitledBorder(" Accompagnant ");
 			jContentAccompagnant.setBorder(Bord);
-			jContentAccompagnant.setBounds(new Rectangle(200, 222, 700, 257));
+			jContentAccompagnant.setBounds(new Rectangle(463, 222, 277, 257));
 			
 			jContentAccompagnant.add(getRadiobtn_AccompagnantOui());
 			jContentAccompagnant.add(getRadiobtn_AccompagnantNon());
 			jContentAccompagnant.add(getChoixAccompagnant());
 			
 			jChoixAccompagnant.setVisible(false);
-			JLabel lblAccompagnant = new JLabel();
-			lblAccompagnant.setText("Accompagnant");
-			lblAccompagnant.setBounds(new Rectangle(10, 140, 100, 30));
-			lblAccompagnant.setBounds(424, -11, 100, 30);
-			jContentAccompagnant.add(lblAccompagnant);
-			jContentHotel.setVisible(false);
 		}
 		return jContentAccompagnant;
 	}
 	
 	private JPanel getChoixAccompagnant(){
 		jChoixAccompagnant = new JPanel();
-		jChoixAccompagnant.setBounds(434, 46, 256, 200);
+		jChoixAccompagnant.setBounds(16, 57, 251, 189);
 		jChoixAccompagnant.setLayout(null);
 		
 		JLabel lblSamedi = new JLabel("Samedi");
@@ -605,7 +588,7 @@ public class JContentInscription extends JPanel {
 		btn_Accompagnant_Oui = new JRadioButton();
 		btn_Accompagnant_Oui.setText("Oui");
 		btn_Accompagnant_Oui.setBounds(new Rectangle(10, 20, 80, 30));
-		btn_Accompagnant_Oui.setBounds(424, 20, 80, 30);
+		btn_Accompagnant_Oui.setBounds(6, 20, 80, 30);
 		btn_Accompagnant_Oui.addActionListener(new java.awt.event.ActionListener() {
 		public void actionPerformed(java.awt.event.ActionEvent e) {
 			jChoixAccompagnant.setVisible(true);
@@ -620,7 +603,7 @@ public class JContentInscription extends JPanel {
 		btn_Accompagnant_Non = new JRadioButton();
 		btn_Accompagnant_Non.setText("Non");
 		btn_Accompagnant_Non.setBounds(new Rectangle(100, 20, 100, 30));
-		btn_Accompagnant_Non.setBounds(544, 20, 100, 30);
+		btn_Accompagnant_Non.setBounds(88, 20, 100, 30);
 		btn_Accompagnant_Non.addActionListener(new java.awt.event.ActionListener() {
 		public void actionPerformed(java.awt.event.ActionEvent e) {
 			jChoixAccompagnant.setVisible(false);
