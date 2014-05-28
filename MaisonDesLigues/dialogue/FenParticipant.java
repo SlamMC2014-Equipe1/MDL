@@ -1,39 +1,30 @@
 package dialogue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JButton;
-import java.awt.Rectangle;
-import java.awt.event.ItemEvent;
-import javax.swing.BorderFactory;
-import javax.swing.JCheckBox;
-import javax.swing.JLabel;
-import javax.swing.JRadioButton;
-import javax.swing.ButtonGroup;
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import javax.swing.SwingConstants;
-import javax.swing.border.Border;
-import java.sql.Date;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
+
 //permet d établir le lien avec la classe GestionDemandes
 import controle.GestionDemandes;
 import entite.*;
 import vues.*;
-import javax.swing.JTextPane;
-import javax.swing.JTextArea;
-import java.awt.Font;
-import java.util.ArrayList;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import javax.swing.JFormattedTextField;
 
 public class FenParticipant extends JFrame {
 	private static final long serialVersionUID = 1L;
 	// propriété pour établir le lien avec la classe GestionDemandes
 	private GestionDemandes gestionBD = new GestionDemandes();  
 	private JPanel jContentInscription = null;
+	
+	private JMenuBar menuBar;
+	private JMenu menu;
+	private JMenu mnGestion;
+	private JMenuItem mntmQuitter;
 
 	/*** This is the default constructor */
 	public FenParticipant() {
@@ -44,6 +35,7 @@ public class FenParticipant extends JFrame {
 	/** This method initializes this @return void */
 	private void initialize() {
 		this.setSize(810, 870);
+		setJMenuBar(getMenuBar_1());
 		this.setContentPane(getJContentInscription());
 		this.setTitle("Maison des Ligues : Inscription ");
 	}
@@ -55,4 +47,58 @@ public class FenParticipant extends JFrame {
 		return jContentInscription;
 	}
 	
+	private JMenuBar getMenuBar_1() {
+		if (menuBar == null) {
+			menuBar = new JMenuBar();
+			menuBar.add(getMenu());
+			menuBar.add(getMnGestion());
+		}
+		return menuBar;
+	}
+	private JMenu getMenu() {
+		if (menu == null) {
+			menu = new JMenu("Accueil");
+			menu.add(getMntmQuitter());
+		}
+		return menu;
+	}
+	private JMenu getMnGestion() {
+		if (mnGestion == null) {
+			mnGestion = new JMenu("Gestion");
+			
+			JMenuItem mntmAjout = new JMenuItem("Ajout");
+			mntmAjout.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					getContentPane().revalidate();
+					getContentPane().repaint();
+					setContentPane(new FenAjouter());
+					
+				}
+			});
+			mnGestion.add(mntmAjout);
+			
+			JMenuItem mntmModification = new JMenuItem("Modification");
+			mntmModification.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					getContentPane().revalidate();
+					getContentPane().repaint();
+					setContentPane(new FenModification());
+				}
+			});
+			mnGestion.add(mntmModification);
+		}
+		return mnGestion;
+	}
+	
+	private JMenuItem getMntmQuitter() {
+		if (mntmQuitter == null) {
+			mntmQuitter = new JMenuItem("Quitter");
+			mntmQuitter.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					
+				}
+			});
+		}
+		return mntmQuitter;
+	}
 }  //  @jve:decl-index=0:visual-constraint="16,5"

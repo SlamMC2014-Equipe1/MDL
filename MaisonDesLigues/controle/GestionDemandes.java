@@ -168,6 +168,34 @@ public class GestionDemandes
 		}
 		return true;
 	}
+	
+	public GestVacationList chargeVacation(int idat){
+		String requete="select idvacation from Vacation where idatelier="+idat;
+		GestVacationList Listedesvacations = new GestVacationList();
+		Vacation uneVacation;
+		try
+		{
+			Statement state = ControleConnexion.getControleConnexion().getConnexion().createStatement();
+			ResultSet result=state.executeQuery(requete);
+			if(!result.next())
+				return null;
+			do {
+				uneVacation = new Vacation(result.getInt(1), result.getInt(2), result.getString(3), result.getString(4));
+				Listedesvacations.Ajouter(uneVacation);
+			}
+			while (result.next());
+			state.close();
+			return Listedesvacations;
+		}
+		catch (SQLException e)
+		{
+			JOptionPane.showMessageDialog(null, "Erreur sur la requete: "+e.getMessage(), "ALERTE"
+					, JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public GestQualiteList chargeQualite(){
 		String requete="select * from Qualite";
 		GestQualiteList  Listedesqualites = new GestQualiteList();
