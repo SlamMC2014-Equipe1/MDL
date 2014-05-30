@@ -4,7 +4,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Date;
+
 import javax.swing.JOptionPane;
+
 import entite.*;
 import java.util.ArrayList;
 
@@ -168,7 +170,12 @@ public class GestionDemandes
 			if(!result.next())
 				return null;
 			do {
-				unatelier = new Atelier(result.getInt(1), result.getInt(2), result.getString(3), result.getInt(4));
+				int idAtelier = result.getInt(1);
+				int idParticipant = result.getInt(2);
+				String libelleAtelier = result.getString(3);
+				int nbPlacesMaxi = result.getInt(4);
+				
+				unatelier = new Atelier(idAtelier, idParticipant, libelleAtelier, nbPlacesMaxi);
 				Listedesateliers.Ajouter(unatelier);
 			}
 			while (result.next());
@@ -186,7 +193,7 @@ public class GestionDemandes
 	public boolean majAtelier(GestAtelierList liste){
 		// Recopie de la collection atelier dans la table atelier
 		for (int i=0;i<liste.Nbelement();i++) {
-			String requete = "update atelier  set IDPARTICIPANT = '"+ liste.elt(i).getNointervenant()+"', LIBELLEATELIER = '"+liste.elt(i).getLibelleatelier()+"', NBPLACESMAXI = '"+ liste.elt(i).getMaxplace()+"' where IDATELIER = '"+liste.elt(i).getNoatelier()+"'";
+			String requete = "update atelier set IDPARTICIPANT = "+ liste.elt(i).getNointervenant()+", LIBELLEATELIER = '"+liste.elt(i).getLibelleatelier()+"', NBPLACESMAXI = '"+ liste.elt(i).getMaxplace()+"' where IDATELIER = '"+liste.elt(i).getNoatelier()+"'";
 			if (!executeReq(requete))
 			{
 				return false;

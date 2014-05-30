@@ -7,6 +7,7 @@ import java.awt.event.ItemEvent;
 import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.awt.BorderLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -41,8 +42,8 @@ public class JContentInscription extends JPanel {
 	private JPanel jContentInscriptionBenevole= null;
 	private JPanel jContentInscriptionLicencie = null;
 	private JPanel jContentNuitée = null;
+	private JPanel jContentAccompagnant = null;
 	private JPanel jContentHotel = null;
-	private JButton btn_quitter = null;
 	private GestAtelierList listeAtel;
 	private ButtonGroup groupeboutons = new ButtonGroup(); 
 	private JRadioButton radiobtn_Intervenant = null;
@@ -118,13 +119,12 @@ public class JContentInscription extends JPanel {
 	 */
 	public JContentInscription() {
 		setLayout(null);
-		setSize(810, 870);
+		setSize(810, 970);
 		add(getjContentInscriptionLicencie());
 		add(getjContentInscriptionIntervenant());
 		add(getjContentInscriptionBenevole());
 		add(getjContentChoixParticipant());
 		add(getjContentIdentite());
-		add(getBtn_quitter());
 		add(getBtn_embaucher());
 		add(getBtn_ok());
 		add(getBtn_annuler());
@@ -190,7 +190,7 @@ public class JContentInscription extends JPanel {
 			}
 		}*/
 		JOptionPane.showMessageDialog(null, "Inscription Intervenant effectuée.",
-				"", JOptionPane.ERROR_MESSAGE);
+				"", JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	private void enregistrerlicencie(){
@@ -320,11 +320,15 @@ public class JContentInscription extends JPanel {
 		return(true);
 	}
 	
+	public GestAtelierList getListeAtel() {
+		return this.listeAtel;
+	}
+	
 	private JPanel getjContentIdentite() {
 		if (jContentIdentite == null) {
 			jContentIdentite = new JPanel();
-			jContentIdentite.setBounds(11, 56, 750, 220);
-			jContentIdentite.setLayout(null);
+			//jContentIdentite.setBounds(11, 56, 750, 220);
+			jContentIdentite.setBounds(10, 81, 750, 220);
 			jContentIdentite.setLayout(null);
 			Border Bord = BorderFactory.createTitledBorder(" Identité du Participant ");
 			jContentIdentite.setBorder(Bord);
@@ -368,7 +372,7 @@ public class JContentInscription extends JPanel {
 	private JPanel getjContentInscriptionLicencie() {
 		if (jContentInscriptionLicencie == null) {
 			jContentInscriptionLicencie = new JPanel();
-			jContentInscriptionLicencie.setBounds(1, 280, 783, 490);
+			jContentInscriptionLicencie.setBounds(10, 300, 750, 490);
 			jContentInscriptionLicencie.setLayout(null);
 			jContentInscriptionLicencie.setLayout(null);
 			Border Bord = BorderFactory.createTitledBorder(" Complément sur l'inscription du Licencié ");
@@ -405,6 +409,7 @@ public class JContentInscription extends JPanel {
 			jContentInscriptionLicencie.add(getChoix5());
 			jContentInscriptionLicencie.add(getChoix6());
 			jContentInscriptionLicencie.add(getjContentNuitée(),null);
+			jContentInscriptionLicencie.add(getjContentAccompagnant(),null);
 
 			
 			
@@ -423,7 +428,7 @@ public class JContentInscription extends JPanel {
 					getTxt_clewifi().setText(generate(8));
 				}
 			});
-			btnNewButton.setBounds(679, 64, 89, 23);
+			btnNewButton.setBounds(569, 101, 89, 23);
 			jContentInscriptionLicencie.add(btnNewButton);
 
 			
@@ -434,7 +439,7 @@ public class JContentInscription extends JPanel {
 	private JPanel getjContentInscriptionBenevole() {
 		if (jContentInscriptionBenevole == null) {
 			jContentInscriptionBenevole = new JPanel();
-			jContentInscriptionBenevole.setBounds(1, 280, 750, 270);
+			jContentInscriptionBenevole.setBounds(10, 300, 750, 270);
 			jContentInscriptionBenevole.setLayout(null);
 			jContentInscriptionBenevole.setLayout(null);
 			Border Bord = BorderFactory.createTitledBorder(" Complément sur l'inscription du Bénévole ");
@@ -461,7 +466,7 @@ public class JContentInscription extends JPanel {
 	private JPanel getjContentInscriptionIntervenant() {
 		if (jContentInscriptionIntervenant == null) {
 			jContentInscriptionIntervenant = new JPanel();
-			jContentInscriptionIntervenant.setBounds(1, 280, 750, 270);
+			jContentInscriptionIntervenant.setBounds(10, 300, 750, 270);
 			jContentInscriptionIntervenant.setLayout(null);
 			jContentInscriptionIntervenant.setLayout(null);
 			Border Bord = BorderFactory.createTitledBorder(" Complément sur l'inscription de l'intervenant ");
@@ -484,32 +489,37 @@ public class JContentInscription extends JPanel {
 			jContentNuitée.setLayout(null);
 			Border Bord = BorderFactory.createTitledBorder(" Nuitée(s)");
 			jContentNuitée.setBorder(Bord);
-			jContentNuitée.setBounds(new Rectangle(15, 222, 700, 257));
+			jContentNuitée.setBounds(new Rectangle(15, 222, 431, 257));
 			
 
 			jContentNuitée.add(getRadiobtn_HotelOui(), null);
 			jContentNuitée.add(getRadiobtn_HotelNon(), null);
 			jContentNuitée.add(getjContentHotel(), null);
-			
-			jContentNuitée.add(getRadiobtn_AccompagnantOui());
-			
-
-			jContentNuitée.add(getRadiobtn_AccompagnantNon());
-			jContentNuitée.add(getChoixAccompagnant());
-			jChoixAccompagnant.setVisible(false);
-			JLabel lblAccompagnant = new JLabel();
-			lblAccompagnant.setText("Accompagnant");
-			lblAccompagnant.setBounds(new Rectangle(10, 140, 100, 30));
-			lblAccompagnant.setBounds(424, -11, 100, 30);
-			jContentNuitée.add(lblAccompagnant);
 			jContentHotel.setVisible(false);
 		}
 		return jContentNuitée;
 	}
 	
+	private JPanel getjContentAccompagnant() {
+		if (jContentAccompagnant == null) {
+			jContentAccompagnant = new JPanel();
+			jContentAccompagnant.setLayout(null);
+			Border Bord = BorderFactory.createTitledBorder(" Accompagnant ");
+			jContentAccompagnant.setBorder(Bord);
+			jContentAccompagnant.setBounds(new Rectangle(463, 222, 277, 257));
+			
+			jContentAccompagnant.add(getRadiobtn_AccompagnantOui());
+			jContentAccompagnant.add(getRadiobtn_AccompagnantNon());
+			jContentAccompagnant.add(getChoixAccompagnant());
+			
+			jChoixAccompagnant.setVisible(false);
+		}
+		return jContentAccompagnant;
+	}
+	
 	private JPanel getChoixAccompagnant(){
 		jChoixAccompagnant = new JPanel();
-		jChoixAccompagnant.setBounds(434, 46, 256, 200);
+		jChoixAccompagnant.setBounds(16, 57, 251, 189);
 		jChoixAccompagnant.setLayout(null);
 		JLabel lblSamedi = new JLabel("Samedi");
 		lblSamedi.setBounds(10, 11, 46, 14);
@@ -579,7 +589,7 @@ public class JContentInscription extends JPanel {
 	private JPanel getjContentChoixParticipant() {
 		if (jContentChoixParticipant == null) {
 			jContentChoixParticipant = new JPanel();
-			jContentChoixParticipant.setBounds(10, 11, 500, 59);
+			jContentChoixParticipant.setBounds(150, 11, 500, 59);
 			jContentChoixParticipant.setLayout(null);
 			Border Bord = BorderFactory.createTitledBorder(" Type de Participant ");
 			jContentChoixParticipant.setBorder(Bord);
@@ -588,22 +598,6 @@ public class JContentInscription extends JPanel {
 			jContentChoixParticipant.add(getRadiobtn_Benevole(), null);
 		}
 		return jContentChoixParticipant;
-	}
-	
-	/*** This method initializes btn_quitter@return javax.swing.JButton	 */
-	private JButton getBtn_quitter() {
-		if (btn_quitter == null) {
-			btn_quitter = new JButton();
-			btn_quitter.setBounds(472, 781, 110, 40);
-			btn_quitter.setText("Quitter");
-			btn_quitter.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) 
-				{
-
-				}
-			});
-		}
-		return btn_quitter;
 	}
 	
 	/*** This method initializes radiobtn_Intervenant @return javax.swing.JRadioButton*/
@@ -655,7 +649,7 @@ public class JContentInscription extends JPanel {
 			btn_Accompagnant_Oui = new JRadioButton();
 			btn_Accompagnant_Oui.setText("Oui");
 			btn_Accompagnant_Oui.setBounds(new Rectangle(10, 20, 80, 30));
-			btn_Accompagnant_Oui.setBounds(424, 20, 80, 30);
+			btn_Accompagnant_Oui.setBounds(16, 20, 80, 30);
 			btn_Accompagnant_Oui.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				jChoixAccompagnant.setVisible(true);
@@ -672,7 +666,7 @@ public class JContentInscription extends JPanel {
 			btn_Accompagnant_Non = new JRadioButton();
 			btn_Accompagnant_Non.setText("Non");
 			btn_Accompagnant_Non.setBounds(new Rectangle(100, 20, 100, 30));
-			btn_Accompagnant_Non.setBounds(544, 20, 100, 30);
+			btn_Accompagnant_Non.setBounds(98, 20, 100, 30);
 			btn_Accompagnant_Non.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent e) {
 				jChoixAccompagnant.setVisible(false);
@@ -746,7 +740,7 @@ public class JContentInscription extends JPanel {
 	private JButton getBtn_embaucher() {
 		if (btn_embaucher == null) {
 			btn_embaucher = new JButton();
-			btn_embaucher.setBounds(366, 781, 110, 40);
+			btn_embaucher.setBounds(510, 801, 110, 40);
 			btn_embaucher.setText("Etre Benevole");
 			btn_embaucher.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -765,7 +759,7 @@ public class JContentInscription extends JPanel {
 	private JButton getBtn_ok() {
 		if (btn_ok == null) {
 			btn_ok = new JButton();
-			btn_ok.setBounds(258, 781, 110, 40);
+			btn_ok.setBounds(390, 801, 110, 40);
 			btn_ok.setText("Enregistrer");
 			btn_ok.setVisible(false);
 			btn_ok.addActionListener(new java.awt.event.ActionListener() {
@@ -862,7 +856,7 @@ public class JContentInscription extends JPanel {
 	private JButton getBtn_annuler() {
 		if (btn_annuler == null) {
 			btn_annuler = new JButton();
-			btn_annuler.setBounds(150, 781, 110, 40);
+			btn_annuler.setBounds(270, 801, 110, 40);
 			btn_annuler.setText("Annuler");
 			btn_annuler.setVisible(false);
 			btn_annuler.addActionListener(new java.awt.event.ActionListener() {
@@ -1135,7 +1129,7 @@ public class JContentInscription extends JPanel {
 	private JButton getBtn_Rechercher() {
 		if (Btn_Rechercher == null) {
 			Btn_Rechercher = new JButton();
-			Btn_Rechercher.setBounds(41, 781, 110, 40);
+			Btn_Rechercher.setBounds(150, 801, 110, 40);
 			Btn_Rechercher.setText("Rechercher");
 			Btn_Rechercher.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -1310,5 +1304,4 @@ public class JContentInscription extends JPanel {
 	        }
 	        return pass.toString();
 	}
-
 }
