@@ -96,10 +96,10 @@ public class FenParticipant extends JFrame {
 			mntmQuitter.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					// Recopie des collections dans la base de données
-					if (gestionBD.majAtelier(listeAtel))
+					/*if (gestionBD.majAtelier(listeAtel))
 					{	
 						System.out.println("mise a jour de la base effectuée");
-					}
+					}*/
 					FenParticipant.this.dispose() ;
 	//				controle.ControleConnexion.getControleConnexion().fermetureSession();
 					System.exit(0);

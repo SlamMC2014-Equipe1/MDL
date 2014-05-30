@@ -26,6 +26,10 @@ public abstract class Participant
 		statutparticipant=wstatut;
 		
 	}
+	
+	public void setNumParticipant(int numero){
+		this.numparticipant=numero;
+	}
 	public Integer getNumparticipant(){
 		return numparticipant;
 	}

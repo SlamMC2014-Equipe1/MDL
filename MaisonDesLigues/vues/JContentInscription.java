@@ -20,6 +20,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
+import java.util.ArrayList;
 
 import controle.GestionDemandes;
 import dialogue.FenParticipant;
@@ -103,10 +104,14 @@ public class JContentInscription extends JPanel {
 	private JCheckBox Choix4 = new JCheckBox();
 	private JCheckBox Choix5 = new JCheckBox();
 	private JCheckBox Choix6 = new JCheckBox();
-	private JRadioButton btn_Accompagnant_Oui= new JRadioButton();
-	private JRadioButton btn_Accompagnant_Non = new JRadioButton();
+	private JRadioButton btn_Accompagnant_Oui=null;
+	private JRadioButton btn_Accompagnant_Non=null;
 	private JPanel jChoixAccompagnant;
 	private ButtonGroup groupeAccompagnant = new ButtonGroup();
+	private ArrayList<Integer> listeChoix = new ArrayList<Integer>();
+	private JCheckBox samediDejeuner=null;
+	private JCheckBox samediDiner=null;
+	private JCheckBox dimancheDejeuner=null;
 
 	/**
 	 * Create the panel.
@@ -163,7 +168,7 @@ public class JContentInscription extends JPanel {
 			// mise à jour de l'intervenant animateur dans la collection atelier
 			listeAtel.elt(listeAtel.rechercher(numatelier)).SetNointervenant(IdParticipant);
 		}
-		int numordre = gestionBD.sp_maxnumordre(IdParticipant);
+		/*int numordre = gestionBD.sp_maxnumordre(IdParticipant);
 		
 		if (getRadiobtn_HotelOui().isSelected())
 		{
@@ -183,7 +188,7 @@ public class JContentInscription extends JPanel {
 				// enregistrement de la nuit d'hotel
 				gestionBD.enregistrerDetailHebergement(IdParticipant, numordre, numhotel2, categorie2, 1);
 			}
-		}
+		}*/
 		JOptionPane.showMessageDialog(null, "Inscription Intervenant effectuée.",
 				"", JOptionPane.ERROR_MESSAGE);
 	}
@@ -211,8 +216,47 @@ public class JContentInscription extends JPanel {
 		}
 		//float txinteret = Float.valueOf(txt_clewifi.getText()).floatValue();
 		int idqualite=Integer.parseInt(""+((String)cbx_qualite.getSelectedItem()).charAt(0));
- 	 	if(!gestionBD.enregistrerLicencie(txt_nom.getText(),txt_prenom.getText(),txt_adr1.getText(), txt_adr2.getText(), txt_cp.getText(), txt_ville.getText(), txt_mail.getText(),Statut, dteins,dtearr,txt_clewifi.getText(), txt_nolicence.getText(), idqualite))
-		return;
+ 	 	if(!gestionBD.enregistrerLicencie(txt_nom.getText(),txt_prenom.getText(),txt_adr1.getText(), txt_adr2.getText(), txt_cp.getText(), txt_ville.getText(), txt_mail.getText(),Statut, dteins,dtearr,txt_clewifi.getText(), txt_nolicence.getText(), idqualite, listeChoix))
+ 	 		return;
+ 	 	
+ 	 	Integer IdParticipant = gestionBD.rechercherParticipantsurnom(txt_nom.getText()).getNumparticipant();
+ 	 	System.out.println(IdParticipant);
+		int numordre = gestionBD.sp_maxnumordre(IdParticipant);
+		if (getRadiobtn_HotelOui().isSelected())
+			{
+				if (getCheck_Nuitdu12().isSelected())
+				{
+					numordre = numordre + 1;
+					int numhotel1=Integer.parseInt(""+((String)cbx_hotel_nuit1.getSelectedItem()).charAt(0));
+					int categorie1=Integer.parseInt(""+((String)cbx_catchambre_nuit1.getSelectedItem()).charAt(0));
+					// enregistrement de la nuit d'hotel
+				gestionBD.enregistrerDetailHebergement(IdParticipant, numordre, numhotel1, categorie1, 1);
+				}
+				if (getCheck_Nuitdu13().isSelected())
+				{
+					numordre = numordre + 1;
+					int numhotel2=Integer.parseInt(""+((String)cbx_hotel_nuit2.getSelectedItem()).charAt(0));
+					int categorie2=Integer.parseInt(""+((String)cbx_catchambre_nuit2.getSelectedItem()).charAt(0));
+					// enregistrement de la nuit d'hotel
+					gestionBD.enregistrerDetailHebergement(IdParticipant, numordre, numhotel2, categorie2, 1);
+				}
+			}
+		System.out.println(getRadiobtn_AccompagnantOui().isSelected());
+		if(getRadiobtn_AccompagnantOui().isSelected())
+		{
+			if(getSamediDejeuner().isSelected())
+			{
+				gestionBD.enregistrerAccompagnant(IdParticipant,1);
+			}
+			if(getSamediDiner().isSelected())
+			{
+				gestionBD.enregistrerAccompagnant(IdParticipant,2);
+			}
+			if(getDimancheDejeuner().isSelected())
+			{
+				gestionBD.enregistrerAccompagnant(IdParticipant,3);
+			}
+		}
 	}
 	
 	private void enregistrerbenevole(){
@@ -467,29 +511,45 @@ public class JContentInscription extends JPanel {
 		jChoixAccompagnant = new JPanel();
 		jChoixAccompagnant.setBounds(434, 46, 256, 200);
 		jChoixAccompagnant.setLayout(null);
-		
 		JLabel lblSamedi = new JLabel("Samedi");
 		lblSamedi.setBounds(10, 11, 46, 14);
 		jChoixAccompagnant.add(lblSamedi);
-		
-		JCheckBox chckbxDjeuner = new JCheckBox("D\u00E9jeuner");
-		chckbxDjeuner.setBounds(10, 32, 97, 23);
-		jChoixAccompagnant.add(chckbxDjeuner);
-		
-		JCheckBox chckbxDner = new JCheckBox("D\u00EEner");
-		chckbxDner.setBounds(109, 32, 97, 23);
-		jChoixAccompagnant.add(chckbxDner);
-		
+		jChoixAccompagnant.add(getSamediDejeuner());
+		jChoixAccompagnant.add(getSamediDiner());
 		JLabel lblDimanche = new JLabel("Dimanche");
 		lblDimanche.setBounds(10, 85, 74, 14);
 		jChoixAccompagnant.add(lblDimanche);
-		
-		JCheckBox chckbxDejeuner = new JCheckBox("D\u00E9jeuner");
-		chckbxDejeuner.setBounds(10, 106, 97, 23);
-		jChoixAccompagnant.add(chckbxDejeuner);
+		jChoixAccompagnant.add(getDimancheDejeuner());
 
 		
 		return jChoixAccompagnant;
+	}
+	
+	private JCheckBox getSamediDejeuner(){
+		if (samediDejeuner==null){	
+			samediDejeuner = new JCheckBox("D\u00E9jeuner");
+			samediDejeuner.setBounds(10, 32, 97, 23);
+		}
+		return samediDejeuner;
+		
+	}
+	
+	private JCheckBox getSamediDiner(){
+		if(samediDiner==null){
+			samediDiner = new JCheckBox("D\u00EEner");
+			samediDiner.setBounds(109, 32, 97, 23);
+		}
+		return samediDiner;
+		
+	}
+	
+	private JCheckBox getDimancheDejeuner(){
+		if(dimancheDejeuner==null){
+			dimancheDejeuner = new JCheckBox("D\u00E9jeuner");
+			dimancheDejeuner.setBounds(10, 106, 97, 23);
+		}
+		return dimancheDejeuner;
+		
 	}
 	
 	private JPanel getjContentHotel() {
@@ -591,30 +651,34 @@ public class JContentInscription extends JPanel {
 	}
 		
 	private JRadioButton getRadiobtn_AccompagnantOui(){
-		btn_Accompagnant_Oui = new JRadioButton();
-		btn_Accompagnant_Oui.setText("Oui");
-		btn_Accompagnant_Oui.setBounds(new Rectangle(10, 20, 80, 30));
-		btn_Accompagnant_Oui.setBounds(424, 20, 80, 30);
-		btn_Accompagnant_Oui.addActionListener(new java.awt.event.ActionListener() {
-		public void actionPerformed(java.awt.event.ActionEvent e) {
-			jChoixAccompagnant.setVisible(true);
-			}
-		});
-		
+		if (btn_Accompagnant_Oui == null) {
+			btn_Accompagnant_Oui = new JRadioButton();
+			btn_Accompagnant_Oui.setText("Oui");
+			btn_Accompagnant_Oui.setBounds(new Rectangle(10, 20, 80, 30));
+			btn_Accompagnant_Oui.setBounds(424, 20, 80, 30);
+			btn_Accompagnant_Oui.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				jChoixAccompagnant.setVisible(true);
+				}
+			});
+		}
 		return btn_Accompagnant_Oui;
 	}
 	
 	
 	private JRadioButton getRadiobtn_AccompagnantNon(){
-		btn_Accompagnant_Non = new JRadioButton();
-		btn_Accompagnant_Non.setText("Non");
-		btn_Accompagnant_Non.setBounds(new Rectangle(100, 20, 100, 30));
-		btn_Accompagnant_Non.setBounds(544, 20, 100, 30);
-		btn_Accompagnant_Non.addActionListener(new java.awt.event.ActionListener() {
-		public void actionPerformed(java.awt.event.ActionEvent e) {
-			jChoixAccompagnant.setVisible(false);
-			}
-		});
+		if (btn_Accompagnant_Non==null){
+			
+			btn_Accompagnant_Non = new JRadioButton();
+			btn_Accompagnant_Non.setText("Non");
+			btn_Accompagnant_Non.setBounds(new Rectangle(100, 20, 100, 30));
+			btn_Accompagnant_Non.setBounds(544, 20, 100, 30);
+			btn_Accompagnant_Non.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent e) {
+				jChoixAccompagnant.setVisible(false);
+				}
+			});
+		}
 		return btn_Accompagnant_Non;
 		
 	}
@@ -1114,7 +1178,7 @@ public class JContentInscription extends JPanel {
 		Choix1 = new JCheckBox(listeAtel.elt(0).getLibelleatelier());
 		Choix1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				modifierNombreChoix(Choix1);
+				modifierNombreChoix(Choix1, 1);
 				gererCheckbox(Choix2);
 				gererCheckbox(Choix3);
 				gererCheckbox(Choix4);
@@ -1131,7 +1195,7 @@ public class JContentInscription extends JPanel {
 		Choix2 = new JCheckBox(listeAtel.elt(1).getLibelleatelier());
 		Choix2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				modifierNombreChoix(Choix2);
+				modifierNombreChoix(Choix2, 2);
 				gererCheckbox(Choix3);
 				gererCheckbox(Choix1);
 				gererCheckbox(Choix4);
@@ -1149,7 +1213,7 @@ public class JContentInscription extends JPanel {
 		Choix3 = new JCheckBox(listeAtel.elt(2).getLibelleatelier());
 		Choix3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				modifierNombreChoix(Choix3);
+				modifierNombreChoix(Choix3, 3);
 				gererCheckbox(Choix2);
 				gererCheckbox(Choix1);
 				gererCheckbox(Choix4);
@@ -1166,7 +1230,7 @@ public class JContentInscription extends JPanel {
 		Choix4 = new JCheckBox(listeAtel.elt(3).getLibelleatelier());
 		Choix4.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				modifierNombreChoix(Choix4);
+				modifierNombreChoix(Choix4, 4);
 				gererCheckbox(Choix2);
 				gererCheckbox(Choix3);
 				gererCheckbox(Choix1);
@@ -1183,7 +1247,7 @@ public class JContentInscription extends JPanel {
 		Choix5 = new JCheckBox(listeAtel.elt(4).getLibelleatelier());
 		Choix5.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				modifierNombreChoix(Choix5);
+				modifierNombreChoix(Choix5, 5);
 				gererCheckbox(Choix2);
 				gererCheckbox(Choix3);
 				gererCheckbox(Choix4);
@@ -1200,7 +1264,7 @@ public class JContentInscription extends JPanel {
 		Choix6 = new JCheckBox(listeAtel.elt(5).getLibelleatelier());
 		Choix6.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				modifierNombreChoix(Choix6);
+				modifierNombreChoix(Choix6, 6);
 				gererCheckbox(Choix2);
 				gererCheckbox(Choix3);
 				gererCheckbox(Choix4);
@@ -1215,13 +1279,17 @@ public class JContentInscription extends JPanel {
 
 
 		
-		private void modifierNombreChoix(JCheckBox checkbox){
+		private void modifierNombreChoix(JCheckBox checkbox, int indice){
 			if (checkbox.isSelected()){
 				nombreDeChoix++;
+				listeChoix.add(indice);
+				
 			}
 			else{
 				nombreDeChoix--;
+				listeChoix.remove((Object)indice);
 			}
+			System.out.println(listeChoix);
 	}
 		
 		private void gererCheckbox(JCheckBox checkbox){
