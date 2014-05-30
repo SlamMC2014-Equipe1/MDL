@@ -37,10 +37,11 @@ public class FenParticipant extends JFrame {
 	
 	/** This method initializes this @return void */
 	private void initialize() {
-		this.setSize(810, 900);
+		this.setSize(810, 920);
 		setJMenuBar(getMenuBarPrincipal());
 		this.setContentPane(getJContentInscription());
 		this.setTitle("Maison des Ligues : Inscription ");
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	private JPanel getJContentInscription() {
@@ -105,7 +106,6 @@ public class FenParticipant extends JFrame {
 					getContentPane().revalidate();
 					getContentPane().repaint();
 					setContentPane(new FenAjouter());
-					
 				}
 			});
 			
