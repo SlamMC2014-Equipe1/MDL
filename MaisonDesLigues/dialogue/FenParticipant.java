@@ -95,6 +95,7 @@ public class FenParticipant extends JFrame {
 	private JMenuBar menuBar;
 	private JMenu menu;
 	private JMenu mnGestion;
+	
 	private void regroupeboutons()
 	{
 		groupeboutons.add(radiobtn_licencie);
@@ -1019,13 +1020,22 @@ public class FenParticipant extends JFrame {
 			JMenuItem mntmAjout = new JMenuItem("Ajout");
 			mntmAjout.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					
+					getContentPane().revalidate();
+					getContentPane().repaint();
+					setContentPane(new FenAjouter());
 					
 				}
 			});
 			mnGestion.add(mntmAjout);
 			
 			JMenuItem mntmModification = new JMenuItem("Modification");
+			mntmModification.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					getContentPane().revalidate();
+					getContentPane().repaint();
+					setContentPane(new FenModification());
+				}
+			});
 			mnGestion.add(mntmModification);
 		}
 		return mnGestion;

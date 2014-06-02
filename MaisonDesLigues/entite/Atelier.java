@@ -27,6 +27,11 @@ public class Atelier
 	public Integer getMaxplace() {
 		return maxplace;
 	}
+	public String req_InsertAtelier() {
+		return "insert into Atelier (idatelier, idparticipant, libelleatelier, nbplacesmaxi)" +
+				"values ('"+this.getNoatelier()+"', '"+this.getNointervenant()+"','"+this.getLibelleatelier()+"','"+this.getMaxplace()+"')"; 
+		
+	}
 	
 
 }
