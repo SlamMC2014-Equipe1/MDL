@@ -44,6 +44,7 @@ public class FenParticipant extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
+	
 	private JPanel getJContentInscription() {
 		if (jContentInscription == null) {
 			jContentInscription = new JContentInscription();

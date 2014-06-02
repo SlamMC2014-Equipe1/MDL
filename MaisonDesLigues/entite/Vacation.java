@@ -25,11 +25,15 @@ public class Vacation
 		return dateheurefin;
 	}
 	public String req_InsertVacation() {
-		return "insert into Atelier (idatelier, idvacation, dateheuredebut, dateheurefin)" +
-				"values ('"+this.getNoatelier()+"', '"+this.getNovacation()+"','"+this.getdated()+"','"+this.getdatef()+"')"; 
-		
+		return "EXEC SP_INSERT_VACATION @IDATELIER = " + this.getNoatelier() + ", "
+				+ "@IDVACATION = " + this.getNovacation() +", "
+				+ "@DATEHEUREDEBUT = '" + this.getdated() + "', "
+				+ "@DATEHEUREFIN = '" + this.getdatef() + "';";
 	}
 	
+	public String req_SelectMaxIdVacation() {
+		return "SELECT MAX(IDVACATION) FROM Vacation WHERE IDATELIER = " + this.getNoatelier();
+	}
 
 }
 
