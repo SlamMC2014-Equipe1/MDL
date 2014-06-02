@@ -4,8 +4,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Date;
+
 import javax.swing.JOptionPane;
+
 import entite.*;
+import java.util.ArrayList;
+
 public class GestionDemandes
 {
 	public boolean enregistrerDetailHebergement(Integer widp,Integer wnumo,Integer wcodh, Integer widc,Integer widdn)
@@ -28,12 +32,28 @@ public class GestionDemandes
 		String requete= lBenevole.req_InsertParticipant();
 		return executeReq(requete);
 	}
-	public boolean enregistrerLicencie	(String wnom,String wprenom, String wadr1, String wadr2, String wcp, String wville, String wmail,String wstatut,Date wdateins, Date wdateenr,String Wclewifi, String wnolicence,int widqualite)
+	public boolean enregistrerLicencie	(String wnom,String wprenom, String wadr1, String wadr2, String wcp, String wville, String wmail,String wstatut,Date wdateins, Date wdateenr,String Wclewifi, String wnolicence,int widqualite, ArrayList<Integer> liste)
 	{
-		Licencie lLicencie = new Licencie(0, wnom,wprenom,wadr1,wadr2,wcp,wville,wmail,wstatut, wdateins,wdateenr,Wclewifi,wnolicence,widqualite);
+		Licencie lLicencie = new Licencie(0, wnom,wprenom,wadr1,wadr2,wcp,wville,wmail,wstatut, wdateins,wdateenr,Wclewifi,wnolicence,widqualite,liste);
+		boolean resultat = true;
+		
 		String requete= lLicencie.req_InsertParticipant();
-		return executeReq(requete);
+		int numauto = executeReqLi(requete);
+		lLicencie.setNumParticipant(numauto); 
+		String requete2= lLicencie.req_InsertInscrire(); 
+		resultat = executeReq(requete2);
+		return resultat;
 	}
+	
+	public boolean enregistrerAccompagnant(Integer idParticipant, Integer idRestauration)
+	{
+
+			String requete = "insert into Inclureaccompagnant values("+idParticipant+","+idRestauration+")";
+			
+			return executeReq(requete);
+
+	}
+	
 	public Participant rechercherParticipantsurnom(String wnom){
 		
 		String requete="select * from Participant where nomparticipant like '"+wnom+"'";
@@ -53,23 +73,31 @@ public class GestionDemandes
 			String ville=result.getString(6);
 			String cp=result.getString(7);
 			String mail=result.getString(8);
-			if(result.getString(12).equals("I"))
+			Date dateInscription=result.getDate(9);
+			Date dateArrivee = result.getDate(10);
+			String cleWifi=result.getString(11); 
+			String statut=result.getString(12);
+			String numeroLicence=result.getString(13);
+			Date dateNaissance=result.getDate(14);
+			Integer idAtelier=result.getInt(15);
+			Integer idQualite=result.getInt(16);
+			if(statut.equals("I"))
 			{
 				// intervenant
-				lIntervenant=new Intervenant(numero,nom,prenom,adr1,adr2,cp,ville,mail,"I",result.getInt(15));
+				lIntervenant=new Intervenant(numero,nom,prenom,adr1,adr2,cp,ville,mail,"I",idAtelier);
 				retourParticipant= lIntervenant;
 			}
 			else
 			{
-				if(result.getString(12).equals("L"))
+				if(statut.equals("L"))
 				{
 				// licencie
-					Licencie lLicencie=new Licencie(numero,nom,prenom,adr1,adr2,cp,ville,mail,"L",result.getDate(9),result.getDate(10),result.getString(11),result.getString(13),result.getInt(15));
+					Licencie lLicencie=new Licencie(numero,nom,prenom,adr1,adr2,cp,ville,mail,"L",dateInscription,dateArrivee,cleWifi,numeroLicence,idQualite, null);
 					retourParticipant= lLicencie;
 				}
 				else
 				{	// Benevole
-					Benevole lBenevole=new Benevole(numero,nom,prenom,adr1,adr2,cp,ville,mail,"B",result.getString(13),result.getDate(14));
+					Benevole lBenevole=new Benevole(numero,nom,prenom,adr1,adr2,cp,ville,mail,"B",numeroLicence,dateNaissance);
 					retourParticipant= lBenevole;
 				}
 			}
@@ -113,7 +141,7 @@ public class GestionDemandes
 				if(result.getString(12).equals("L"))
 				{
 				// licencie
-					Licencie lLicencie=new Licencie(numero,nom,prenom,adr1,adr2,cp,ville,mail,"L",result.getDate(9),result.getDate(10),result.getString(11),result.getString(13),result.getInt(15));
+					Licencie lLicencie=new Licencie(numero,nom,prenom,adr1,adr2,cp,ville,mail,"L",result.getDate(9),result.getDate(10),result.getString(11),result.getString(13),result.getInt(15),null);
 					retourParticipant= lLicencie;
 				}
 				else
@@ -144,7 +172,12 @@ public class GestionDemandes
 			if(!result.next())
 				return null;
 			do {
-				unatelier = new Atelier(result.getInt(1), result.getInt(2), result.getString(3), result.getInt(4));
+				int idAtelier = result.getInt(1);
+				int idParticipant = result.getInt(2);
+				String libelleAtelier = result.getString(3);
+				int nbPlacesMaxi = result.getInt(4);
+				
+				unatelier = new Atelier(idAtelier, idParticipant, libelleAtelier, nbPlacesMaxi);
 				Listedesateliers.Ajouter(unatelier);
 			}
 			while (result.next());
@@ -217,7 +250,7 @@ public class GestionDemandes
 	public boolean majAtelier(GestAtelierList liste){
 		// Recopie de la collection atelier dans la table atelier
 		for (int i=0;i<liste.Nbelement();i++) {
-			String requete = "update atelier  set IDPARTICIPANT = '"+ liste.elt(i).getNointervenant()+"', LIBELLEATELIER = '"+liste.elt(i).getLibelleatelier()+"', NBPLACESMAXI = '"+ liste.elt(i).getMaxplace()+"' where IDATELIER = '"+liste.elt(i).getNoatelier()+"'";
+			String requete = "update atelier set IDPARTICIPANT = "+ liste.elt(i).getNointervenant()+", LIBELLEATELIER = '"+liste.elt(i).getLibelleatelier()+"', NBPLACESMAXI = '"+ liste.elt(i).getMaxplace()+"' where IDATELIER = '"+liste.elt(i).getNoatelier()+"'";
 			if (!executeReq(requete))
 			{
 				return false;
@@ -327,6 +360,27 @@ public class GestionDemandes
 			return false;
 		}
 		return true;
+	}
+	
+	private int executeReqLi(String req){
+		int numero;
+		try
+		{
+			Statement state = ControleConnexion.getControleConnexion().getConnexion().createStatement();
+			state.executeUpdate(req);
+			ResultSet result = state.executeQuery("select @@IDENTITY");
+			if(!result.next())
+				return 0;
+			numero=result.getInt(1);
+			state.close();
+		}
+		catch (SQLException e)
+		{
+			JOptionPane.showMessageDialog(null, "Erreur sur la requete: "+e.getMessage(), "ALERTE"
+					, JOptionPane.ERROR_MESSAGE);
+			return 0;
+		}
+		return numero;
 	}
 	public int sp_maxnumordre(int id) {
 		int res=0;

@@ -190,5 +190,4 @@ public class FenModification extends JPanel {
 		}
 		return btnEnregistrer;
 	}
-	
 }

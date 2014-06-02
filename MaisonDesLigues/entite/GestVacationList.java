@@ -10,7 +10,7 @@ public class GestVacationList {
 	public int Nbelement(){
 		return LesVacations.size();
 	}
-	
+
 	public void Ajouter(Vacation uneVacation)
 	{
 		LesVacations.add(uneVacation);

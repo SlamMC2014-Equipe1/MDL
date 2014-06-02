@@ -1,5 +1,6 @@
 package entite;
 import java.sql.Date;
+import java.util.ArrayList;
 public class Licencie extends Participant
 {
 	private Date dateinscparticipant;
@@ -7,17 +8,20 @@ public class Licencie extends Participant
 	private String clewifiparticipant;
 	private String nolicencelicencie;
 	private  int idqualitelicencie ;
+	private ArrayList<Integer> listeAteliers;
 	// constructeur
 	public Licencie
-	(Integer wnum, String wnom,String wprenom, String wadr1, String wadr2, String wcp, String wville, String wmail, String wstatut, Date wdateins, Date wdateenr,String Wclewifi, String wnolicence,int widqualite)
+	(Integer wnum, String wnom,String wprenom, String wadr1, String wadr2, String wcp, String wville, String wmail, String wstatut, Date wdateins, Date wdateenr,String Wclewifi, String wnolicence,int widqualite, ArrayList<Integer> liste)
 	{
 		//appel du constructeur de la classe mère Participant
-		super(0, wnom, wprenom, wadr1, wadr2, wcp, wville, wmail, wstatut);
+		super(wnum, wnom, wprenom, wadr1, wadr2, wcp, wville, wmail, wstatut);
 		nolicencelicencie = wnolicence ;
 		idqualitelicencie = widqualite ;
 		dateinscparticipant=wdateins;
 		dateenrparticipant=wdateenr;
 		clewifiparticipant=Wclewifi;
+		listeAteliers= new ArrayList<Integer>();
+		listeAteliers = liste;
 	}
 	public Date getDateinscparticipant() {
 		return dateinscparticipant;
@@ -55,6 +59,14 @@ public class Licencie extends Participant
 			+ "','"+this.getDateenrparticipant()+ "','"+ this.getClewifiparticipant()+"','"+super.getStatutparticipant()
 			+"','"+this.getNolicencelicencie()+ "','"+ this.getIdqualitelicencie()+"');"; 
 		}
+	public String req_InsertInscrire(){
+		String req="";
+		for (int i=0; i<this.listeAteliers.size(); i++){	
+			req+="insert into Inscrire (idatelier, idparticipant) values('"+this.listeAteliers.get(i)+"','"+super.getNumparticipant()+"') ";
+		}
+		return req;
+	}
+	
 	public String getType() {
 		return "Licencie";
 	}

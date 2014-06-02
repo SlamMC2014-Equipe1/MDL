@@ -77,6 +77,7 @@ public class FenConnexion extends JFrame {
 		if (txt_login == null) {
 			txt_login = new JTextField();
 			txt_login.setBounds(new Rectangle(130, 30, 150, 30));
+			txt_login.setText("GR1"); // à retirer
 		}
 		return txt_login;
 	}
@@ -85,6 +86,7 @@ public class FenConnexion extends JFrame {
 		if (txt_mdp == null) {
 			txt_mdp = new JPasswordField();
 			txt_mdp.setBounds(new Rectangle(130, 60, 150, 30));
+			txt_mdp.setText("GR1"); // à retirer
 		}
 		return txt_mdp;
 	}
