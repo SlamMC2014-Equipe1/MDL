@@ -6,6 +6,8 @@ import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -472,6 +474,11 @@ public class FenAjouter extends JPanel {
 			if (gettextDateDebut().getText().isEmpty() || gettextDateFin().getText().isEmpty()) {
 				JOptionPane.showMessageDialog(null,"Vous devez saisir la date de début et de fin de la vacation", "",JOptionPane.ERROR_MESSAGE);
 				return false;
+			} else {
+				if(!gettextDateDebut().getText().matches("[0-9]+") || !gettextDateDebut().getText().matches("[0-9]+")); {
+					JOptionPane.showMessageDialog(null,"La date doit être du format YYYY-MM-JJ", "",JOptionPane.ERROR_MESSAGE);
+					return false;
+				}
 			}
 		}
 		

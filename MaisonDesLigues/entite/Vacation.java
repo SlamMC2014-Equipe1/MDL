@@ -1,21 +1,22 @@
 package entite;
+import java.sql.Date;
 public class Vacation 
 {
-	private Integer idatelier;
-	private Integer idvacation;
+	private String idatelier;
+	private String idvacation;
 	private String dateheuredebut;
 	private String dateheurefin;
 	// constructeur
-	public Vacation(Integer wnoat,Integer wnovac,String wdated, String wdatef)	{
+	public Vacation(String wnoat,String wnovac,String wdated, String wdatef)	{
 		idatelier = wnoat;
 		idvacation = wnovac;
 		dateheuredebut = wdated;
 		dateheurefin = wdatef;
 	}
-	public Integer getNoatelier() {
+	public String getNoatelier() {
 		return idatelier;
 	}
-	public Integer getNovacation() {
+	public String getNovacation() {
 		return idvacation;
 	}
 	public String getdated() {

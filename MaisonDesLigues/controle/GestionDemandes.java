@@ -60,7 +60,7 @@ public class GestionDemandes
 			if (!result.next())
 				return false;
 			
-			Vacation lVacation = new Vacation(wnoat, result.getInt(1), wdatedeb, wdatefin);
+			Vacation lVacation = new Vacation(wnoat.toString(), result.getString(1), wdatedeb, wdatefin);
 			requete= lVacation.req_InsertVacation();
 			return executeReq(requete);
 		} catch (SQLException e) {
@@ -246,8 +246,8 @@ public class GestionDemandes
 		return true;
 	}
 	
-	public GestVacationList chargeVacation(int idat){
-		String requete="select idvacation from Vacation where idatelier="+idat;
+	public Vacation chargeDate(int idat, int idvac){
+		String requete="select * from Vacation where idatelier ='"+ idat +"' and idvacation='"+idvac+"'";
 		GestVacationList Listedesvacations = new GestVacationList();
 		Vacation uneVacation;
 		try
@@ -257,7 +257,34 @@ public class GestionDemandes
 			if(!result.next())
 				return null;
 			do {
-				uneVacation = new Vacation(result.getInt(1), result.getInt(2), result.getString(3), result.getString(4));
+				uneVacation = new Vacation(result.getString(1), result.getString(2), result.getString(3), result.getString(4));
+				Listedesvacations.Ajouter(uneVacation);
+			}
+			while (result.next());
+			state.close();
+			return uneVacation;
+		}
+		catch (SQLException e)
+		{
+			JOptionPane.showMessageDialog(null, "Erreur sur la requete: "+e.getMessage(), "ALERTE"
+					, JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public GestVacationList chargeVacation(int idat){
+		String requete="select * from Vacation where idatelier="+idat;
+		GestVacationList Listedesvacations = new GestVacationList();
+		Vacation uneVacation;
+		try
+		{
+			Statement state = ControleConnexion.getControleConnexion().getConnexion().createStatement();
+			ResultSet result=state.executeQuery(requete);
+			if(!result.next())
+				return null;
+			do {
+				uneVacation = new Vacation(result.getString(1), result.getString(2), result.getString(3), result.getString(4));
 				Listedesvacations.Ajouter(uneVacation);
 			}
 			while (result.next());
@@ -271,6 +298,15 @@ public class GestionDemandes
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public boolean majVacation(String idat, String idvac, String dated, String datef){
+			String requete = "update vacation  set dateheuredebut = '"+ dated+"', dateheurefin = '"+ datef+"' where idatelier ='"+ idat +"' and idvacation='"+idvac+"'";
+			if (!executeReq(requete))
+			{
+				return false;
+			}
+		return true;
 	}
 	
 	public GestQualiteList chargeQualite(){

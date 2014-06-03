@@ -33,7 +33,6 @@ public class Atelier
 									+ "@NBPLACESMAXI = " + this.getMaxplace() + ";"; 
 		
 	}
-
 }
 
 
