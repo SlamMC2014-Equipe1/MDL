@@ -38,8 +38,8 @@ public class Benevole extends Participant
 			+ "adresse1participant, adresse2participant, cpparticipant, villeparticipant, "
 			+ "mailparticipant, statutparticipant, numerolicence, datenaissancebenevole) "
 			+ "values('"+super.getNomparticipant()+"','"+super.getPrenomparticipant()
-			+"','"+super.getAdress1participant()+"','"+ super.getAdress2participant()+ "','"
-			+super.getCpparticipant()+ "','"+ super.getVilleparticipant()+ "','"
+			+"','"+super.getAdress1participant()+"','"+ super.getAdress2participant()
+			+"','"+super.getCpparticipant()+ "','"+ super.getVilleparticipant()+ "','"
 			+super.getMailparticipant()+ "','"+ super.getStatutparticipant()+"','"
 			+this.getNolicencebenevole()+ "','"+ this.getDatenaissbenevole()+ "')"; 
 		}

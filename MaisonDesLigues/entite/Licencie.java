@@ -52,7 +52,7 @@ public class Licencie extends Participant
 		return "insert into Participant (nomparticipant,prenomparticipant,"
 			+ "adresse1participant, adresse2participant, cpparticipant, villeparticipant, "
 			+ "mailparticipant, dateinscriptionparticipant, datearriveeparticipant, "
-			+ "clewifiparticipant, statutparticipant, numerolicence, idatelierintervenant) "
+			+ "clewifiparticipant, statutparticipant, numerolicence, idqualitelicencie) "
 			+ "values('"+super.getNomparticipant()+"','"+super.getPrenomparticipant()
 			+"','"+super.getAdress1participant()+"','"+ super.getAdress2participant()+ "','"+super.getCpparticipant()
 			+ "','"+ super.getVilleparticipant()+ "','"+super.getMailparticipant()+ "','"+this.getDateinscparticipant()

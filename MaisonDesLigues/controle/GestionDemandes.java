@@ -26,10 +26,24 @@ public class GestionDemandes
 	}
 	public boolean enregistrerBenevole(String wnom,String wprenom, String wadr1, String wadr2, String wcp, String wville, String wmail, String wstatut, String wnolicence, Date wdatenaiss)
 	{
+		boolean resultat = true;
 		Benevole lBenevole = new Benevole(0, wnom,wprenom,wadr1,wadr2,wcp,wville, wmail, wstatut, wnolicence,wdatenaiss);
 		String requete= lBenevole.req_InsertParticipant();
+		int numauto = executeReqLi(requete);
+		lBenevole.setNumParticipant(numauto); 
+		return resultat;
+	}
+	
+	public boolean enregistrerPaiement (int idparticipant, String num, float montant){
+		String requete = "insert into Paiement values("+idparticipant+",'"+montant+"','"+num+"','cheque')";
 		return executeReq(requete);
 	}
+	
+	public boolean enregistrerPresence(int idparticipant, int num){
+		String requete = "insert into Etrepresent values("+idparticipant+","+num+")";
+		return executeReq(requete);
+	}
+	
 	public boolean enregistrerLicencie	(String wnom,String wprenom, String wadr1, String wadr2, String wcp, String wville, String wmail,String wstatut,Date wdateins, Date wdateenr,String Wclewifi, String wnolicence,int widqualite, ArrayList<Integer> liste)
 	{
 		Licencie lLicencie = new Licencie(0, wnom,wprenom,wadr1,wadr2,wcp,wville,wmail,wstatut, wdateins,wdateenr,Wclewifi,wnolicence,widqualite,liste);
@@ -110,6 +124,63 @@ public class GestionDemandes
 			return null;
 		}
 	}
+	public Participant rechercherParticipantsurlicence(String licence){
+		String requete ="select * from Participant where numerolicence='"+licence+"'";
+		Participant retourParticipant=null;
+		try
+		{
+			Statement state = ControleConnexion.getControleConnexion().getConnexion().createStatement();
+			ResultSet result=state.executeQuery(requete);
+			Intervenant lIntervenant;
+			if(!result.next())
+				return null;
+			Integer numero=result.getInt(1);
+			String nom=result.getString(2);
+			String prenom=result.getString(3);
+			String adr1=result.getString(4);
+			String adr2=result.getString(5);
+			String cp=result.getString(6);
+			String ville=result.getString(7);
+			String mail=result.getString(8);
+			Date dateInscription=result.getDate(9);
+			Date dateArrivee=result.getDate(10);
+			String cleWifi=result.getString(11);
+			String statut=result.getString(12);
+			Date dateNaissanceB=result.getDate(14);
+			int idatelier=result.getInt(15);
+			int idqualite=result.getInt(16);
+			if(statut.equals("I"))
+			{
+				// intervenant
+				lIntervenant=new Intervenant(numero,nom,prenom,adr1,adr2,cp,ville,mail,"I",idatelier);
+				retourParticipant= lIntervenant;
+			}
+			else
+			{
+				if(statut.equals("L"))
+				{
+				// licencie
+					Licencie lLicencie=new Licencie(numero,nom,prenom,adr1,adr2,cp,ville,mail,"L",dateInscription,dateArrivee,cleWifi,licence,idqualite,null);
+					retourParticipant= lLicencie;
+				}
+				else 
+				{	// Benevole
+					Benevole lBenevole=new Benevole(numero,nom,prenom,adr1,adr2,cp,ville,mail,"B",licence,dateNaissanceB);
+					retourParticipant= lBenevole;
+				}
+			}
+			state.close();
+			return retourParticipant;
+		}
+		catch (SQLException e)
+		{
+			JOptionPane.showMessageDialog(null, "Erreur sur la requete: "+e.getMessage(), "ALERTE"
+					, JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+			return null;
+		}
+	}
+		
 	public Participant rechercherParticipant(String mat){
 		String requete="select * from Participant where idparticipant='"+mat+"'";
 		Participant retourParticipant=null;
@@ -159,6 +230,8 @@ public class GestionDemandes
 			return null;
 		}
 	}
+
+	
 	public GestAtelierList chargeAtelier(){
 		String requete="select * from Atelier";
 		GestAtelierList  Listedesateliers = new GestAtelierList();
