@@ -2,12 +2,17 @@ package dialogue;
 
 import java.awt.Button;
 import java.awt.Component;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.TitledBorder;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.JTextPane;
 import javax.swing.JLabel;
@@ -23,8 +28,6 @@ import javax.swing.ButtonGroup;
 public class FenAjouter extends JPanel {
 	private GestionDemandes gestionBD = new GestionDemandes();
 	private GestAtelierList listeAtel;
-	
-	private JTextField textIdVacation;
 	private JTextField textDateDebut;
 	private JTextField textDateFin;
 	private ButtonGroup groupeboutons = new ButtonGroup(); 
@@ -40,29 +43,21 @@ public class FenAjouter extends JPanel {
 	
 	private JButton btnAnnuler;
 	private JButton btnEnregistrer;
-	private JButton btnQuitter;
-	
-	// JContentAjoutAtelier
-	private JLabel lblIdDeLatelier = null;
 	private JLabel lblIdParticipant = null;
 	private JLabel lblLabellDeLatelier = null;
 	private JLabel lblNombreDePlaces = null;
 	private JTextField textIdParticipant;
 	private JTextField textLibelleAtelier;
 	private JTextField textNbPlaces;
-	private JTextField textField;
 	
 	// JContentAjoutTheme
 	private JLabel lblIdAtelierTheme = null;
 	private JLabel lblLibelleTheme = null;
-	private JLabel lblIdTheme = null;
-	private JTextField textIdTheme = null;
 	private JTextField textIdLibelleTheme;
-	public JComboBox cbx_AtelierTheme;
+	public JComboBox<String> cbx_AtelierTheme;
 	
 	// JContentAjouterVacation
 	private JLabel lblIdAtelier;
-	private JLabel lblVacation;
 	private JLabel lblDateDebut;
 	private JLabel lblDateFin;
 	private JComboBox<String> cbx_AtelierVacation;
@@ -76,6 +71,36 @@ public class FenAjouter extends JPanel {
 	// ################
 	// ## Conteneurs ##
 	// ################
+	/**
+	 * Create the panel.
+	 */
+	public FenAjouter() {
+		setLayout(null);
+		
+		JPanel JContentPrincipal = new JPanel();
+		JContentPrincipal.setBounds(0, 0, 592, 509);
+		add(JContentPrincipal);
+		JContentPrincipal.setLayout(null);
+		JContentPrincipal.add(getjContentAjouterTheme());
+		JContentPrincipal.add(getjContentAjouterVacation());
+		JContentPrincipal.add(getjContentAjouterAtelier());
+		
+		JContentPrincipal.add(getjContentChoixAjouter());
+		
+		JContentPrincipal.add(getbtnAnnuler());
+		JContentPrincipal.add(getbtnEnregistrer());
+		
+		jContentAjouterAtelier.setVisible(false);
+		jContentAjouterVacation.setVisible(false);
+		jContentAjouterTheme.setVisible(false);
+		
+		listeAtel = gestionBD.chargeAtelier();
+		
+		// Initialise le contenu des listes déroulantes
+		alimentationListes();
+		
+		regroupeboutton();
+	}
 	
 	public JPanel getjContentChoixAjouter() {
 		if (jContentChoixAjouter == null) {
@@ -93,18 +118,15 @@ public class FenAjouter extends JPanel {
 	public JPanel getjContentAjouterTheme() {
 		if (jContentAjouterTheme == null) {
 			jContentAjouterTheme = new JPanel();
-			jContentAjouterTheme.setBounds(98, 84, 430, 194);
+			jContentAjouterTheme.setBounds(98, 84, 430, 100);
 			
 			jContentAjouterTheme.setLayout(null);
 			jContentAjouterTheme.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Ajouter un thème", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			
 			jContentAjouterTheme.add(getlblIdAtelierTheme());
 			jContentAjouterTheme.add(getlblLibelleTheme());
-			
-			jContentAjouterTheme.add(gettextIdTheme());
 			jContentAjouterTheme.add(gettextIdLibelleTheme());
-			jContentAjouterTheme.add(getlblIdTheme());
-			jContentAjouterTheme.add(getcomboBoxAtelier());
+			jContentAjouterTheme.add(getcbx_AtelierTheme());
 		}
 		return jContentAjouterTheme;
 	}
@@ -112,12 +134,10 @@ public class FenAjouter extends JPanel {
 	public JPanel getjContentAjouterAtelier() {
 		if (jContentAjouterAtelier == null) {
 			jContentAjouterAtelier = new JPanel();
-			jContentAjouterAtelier.setBounds(98, 84, 430, 164);
+			jContentAjouterAtelier.setBounds(98, 84, 430, 124);
 			jContentAjouterAtelier.setVisible(false);
 			jContentAjouterAtelier.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Ajouter un atelier", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			jContentAjouterAtelier.setLayout(null);
-			
-			jContentAjouterAtelier.add(getlblIdDeLatelier());
 			jContentAjouterAtelier.add(getlblIdParticipant());
 			jContentAjouterAtelier.add(getlblLabellDeLatelier());
 			jContentAjouterAtelier.add(getlblNombreDePlaces());
@@ -125,7 +145,6 @@ public class FenAjouter extends JPanel {
 			jContentAjouterAtelier.add(gettextIdParticipant());
 			jContentAjouterAtelier.add(gettextLibelleAtelier());
 			jContentAjouterAtelier.add(gettextNbPlaces());
-			jContentAjouterAtelier.add(gettextField());
 		}
 		return jContentAjouterAtelier;
 	}
@@ -133,20 +152,17 @@ public class FenAjouter extends JPanel {
 	public JPanel getjContentAjouterVacation() {
 		if (jContentAjouterVacation == null) {
 			jContentAjouterVacation = new JPanel();
-			jContentAjouterVacation.setBounds(98, 84, 430, 165);
+			jContentAjouterVacation.setBounds(98, 84, 430, 130);
 			jContentAjouterVacation.setLayout(null);
 			jContentAjouterVacation.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Ajouter une vacation", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 			
 			jContentAjouterVacation.add(getlblIdAtelier());
 			jContentAjouterVacation.add(getlblDateDebut());
-			jContentAjouterVacation.add(getlblVacation());
 			jContentAjouterVacation.add(getlblDateFin());
-			
-			jContentAjouterVacation.add(gettextIdVacation());
 			jContentAjouterVacation.add(gettextDateDebut());
 			jContentAjouterVacation.add(gettextDateFin());
 			
-			jContentAjouterVacation.add(getcbx_Atelier());
+			jContentAjouterVacation.add(getcbx_AtelierVacation());
 		}
 		return jContentAjouterVacation;
 	}
@@ -196,18 +212,10 @@ public class FenAjouter extends JPanel {
 		return rdbtnVacation;
 	}
 	
-	public JLabel getlblIdDeLatelier() {
-		if (lblIdDeLatelier == null) {
-			lblIdDeLatelier = new JLabel("ID de l'atelier ");
-			lblIdDeLatelier.setBounds(10, 38, 97, 14);	
-		}
-		return lblIdDeLatelier;
-	}
-	
 	public JLabel getlblIdParticipant() {
 		if (lblIdParticipant  == null) {
 			lblIdParticipant = new JLabel("ID participant");
-			lblIdParticipant.setBounds(10, 72, 97, 14);
+			lblIdParticipant.setBounds(10, 24, 97, 14);
 		}
 		return lblIdParticipant;
 	}
@@ -215,7 +223,7 @@ public class FenAjouter extends JPanel {
 	public JLabel getlblLabellDeLatelier() {
 		if (lblLabellDeLatelier == null) {
 			lblLabellDeLatelier = new JLabel("Labell\u00E9 de l'atelier");
-			lblLabellDeLatelier.setBounds(10, 106, 97, 14);
+			lblLabellDeLatelier.setBounds(10, 58, 97, 14);
 		}
 		return lblLabellDeLatelier;
 	}
@@ -223,7 +231,7 @@ public class FenAjouter extends JPanel {
 	public JLabel getlblNombreDePlaces() {
 		if (lblNombreDePlaces == null) {
 			lblNombreDePlaces = new JLabel("Nombre de places ");
-			lblNombreDePlaces.setBounds(10, 140, 97, 14);	
+			lblNombreDePlaces.setBounds(10, 92, 97, 14);	
 		}
 		return lblNombreDePlaces;
 	}
@@ -231,7 +239,7 @@ public class FenAjouter extends JPanel {
 	public JTextField gettextIdParticipant() {
 		if (textIdParticipant == null) {
 			textIdParticipant = new JTextField();
-			textIdParticipant.setBounds(117, 69, 86, 20);
+			textIdParticipant.setBounds(117, 21, 86, 20);
 			
 			textIdParticipant.setColumns(10);
 		}
@@ -241,7 +249,7 @@ public class FenAjouter extends JPanel {
 	public JTextField gettextLibelleAtelier() {
 		if (textLibelleAtelier == null) {
 			textLibelleAtelier = new JTextField();
-			textLibelleAtelier.setBounds(117, 103, 290, 20);
+			textLibelleAtelier.setBounds(117, 55, 290, 20);
 			textLibelleAtelier.setColumns(10);
 		}
 		return textLibelleAtelier;
@@ -250,19 +258,10 @@ public class FenAjouter extends JPanel {
 	public JTextField gettextNbPlaces() {
 		if (textNbPlaces == null) {
 			textNbPlaces = new JTextField();
-			textNbPlaces.setBounds(117, 137, 37, 20);
+			textNbPlaces.setBounds(117, 89, 37, 20);
 			textNbPlaces.setColumns(10);
 		}
 		return textNbPlaces;
-	}
-	
-	public JTextField gettextField() {
-		if (textField == null) {
-			textField = new JTextField();
-			textField.setBounds(117, 35, 86, 20);
-			textField.setColumns(10);
-		}
-		return textField; 
 	}
 	
 	public JLabel getlblIdAtelierTheme() {
@@ -277,41 +276,24 @@ public class FenAjouter extends JPanel {
 	public JLabel getlblLibelleTheme() {
 		if (lblLibelleTheme == null) {
 			lblLibelleTheme = new JLabel("Libell\u00E9 du th\u00E8me");
-			lblLibelleTheme.setBounds(10, 106, 97, 14);
+			lblLibelleTheme.setBounds(10, 66, 97, 14);
 		}
 		return lblLibelleTheme;
-	}
-	
-	public JTextField gettextIdTheme() {
-		if (textIdTheme == null) {
-			textIdTheme = new JTextField();
-			textIdTheme.setColumns(10);
-			textIdTheme.setBounds(117, 69, 134, 20);
-		}
-		return textIdTheme;
 	}
 	
 	public JTextField gettextIdLibelleTheme() {
 		if (textIdLibelleTheme == null) {
 			textIdLibelleTheme = new JTextField();
 			textIdLibelleTheme.setColumns(10);
-			textIdLibelleTheme.setBounds(117, 103, 290, 20);
+			textIdLibelleTheme.setBounds(117, 63, 290, 20);
 		}
 		return textIdLibelleTheme;
 	}
 	
-	public JLabel getlblIdTheme() {
-		if (lblIdTheme == null) {
-			lblIdTheme = new JLabel("ID du th\u00E8me");
-			lblIdTheme.setBounds(10, 72, 59, 14);
-		}
-		return lblIdTheme;
-	}
-	
-	public JComboBox getcomboBoxAtelier() {
+	public JComboBox<String> getcbx_AtelierTheme() {
 		if (cbx_AtelierTheme == null) {
-			cbx_AtelierTheme = new JComboBox();
-			cbx_AtelierTheme.setBounds(117, 35, 134, 20);
+			cbx_AtelierTheme = new JComboBox<String>();
+			cbx_AtelierTheme.setBounds(117, 35, 200, 20);
 		}
 		return cbx_AtelierTheme;
 	}
@@ -325,19 +307,10 @@ public class FenAjouter extends JPanel {
 		return lblIdAtelier;
 	}
 	
-	public JLabel getlblVacation() {
-		if (lblVacation == null) {
-			lblVacation = new JLabel("ID vacation");
-			lblVacation.setBounds(10, 72, 97, 14);
-			
-		}
-		return lblVacation;
-	}
-	
 	public JLabel getlblDateDebut() {
 		if (lblDateDebut == null) {
 			lblDateDebut = new JLabel("Date de début");
-			lblDateDebut.setBounds(10, 106, 97, 14);
+			lblDateDebut.setBounds(10, 66, 97, 14);
 			
 		}
 		return lblDateDebut;
@@ -346,26 +319,17 @@ public class FenAjouter extends JPanel {
 	public JLabel getlblDateFin() {
 		if (lblDateFin == null) {
 			lblDateFin = new JLabel("Date de fin");
-			lblDateFin.setBounds(10, 134, 97, 14);
+			lblDateFin.setBounds(10, 91, 97, 14);
 			
 		}
 		return lblDateFin;
-	}
-	
-	public JTextField gettextIdVacation() {
-		if (textIdVacation == null) {
-			textIdVacation = new JTextField();
-			textIdVacation.setColumns(10);
-			textIdVacation.setBounds(117, 69, 134, 20);
-		}
-		return textIdVacation; 
 	}
 	
 	public JTextField gettextDateDebut() {
 		if (textDateDebut == null) {
 			textDateDebut = new JTextField();
 			textDateDebut.setColumns(10);
-			textDateDebut.setBounds(117, 103, 64, 20);
+			textDateDebut.setBounds(117, 63, 134, 20);
 		}
 		return textDateDebut;
 	}
@@ -375,15 +339,15 @@ public class FenAjouter extends JPanel {
 		if (textDateFin == null) {
 			textDateFin = new JTextField();
 			textDateFin.setColumns(10);
-			textDateFin.setBounds(117, 134, 64, 20);
+			textDateFin.setBounds(117, 91, 134, 20);
 		}
 		return textDateFin;
 	}
 	
-	public JComboBox<String> getcbx_Atelier() {
+	public JComboBox<String> getcbx_AtelierVacation() {
 		if (cbx_AtelierVacation == null) {
 			cbx_AtelierVacation = new JComboBox<String>();
-			cbx_AtelierVacation.setBounds(117, 35, 134, 20);
+			cbx_AtelierVacation.setBounds(117, 35, 200, 20);
 		}
 		return cbx_AtelierVacation;
 	}
@@ -391,7 +355,12 @@ public class FenAjouter extends JPanel {
 	public JButton getbtnAnnuler() {
 		if (btnAnnuler == null) {
 			btnAnnuler = new JButton("Annuler");
-			btnAnnuler.setBounds(108, 289, 102, 47);
+			btnAnnuler.setBounds(208, 225, 102, 47);
+			btnAnnuler.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					raz();
+				}
+			});
 		}
 		return btnAnnuler;
 	}
@@ -399,39 +368,131 @@ public class FenAjouter extends JPanel {
 	public JButton getbtnEnregistrer() {
 		if (btnEnregistrer == null) {
 			btnEnregistrer = new JButton("Enregistrer");
-			btnEnregistrer.setBounds(220, 289, 102, 47);
+			btnEnregistrer.setBounds(320, 225, 102, 47);
+			btnEnregistrer.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if (verification()) {
+						// Cas Atelier
+						if (rdbtnAtelier.isSelected()) {
+							Integer idParticipant = gettextIdParticipant().getText().equals("") ? 0 : Integer.parseInt(gettextIdParticipant().getText());
+							
+							if (gestionBD.enregistrerAtelier(idParticipant, 
+														 	textLibelleAtelier.getText(), 
+														 	Integer.parseInt(textNbPlaces.getText()))) {
+								JOptionPane.showMessageDialog(null,"L'atelier " + textLibelleAtelier.getText() + " a bien été ajouté" 
+										,"Ajout atelier",JOptionPane.INFORMATION_MESSAGE);
+								// Tiens à jour les listes déroulantes
+								alimentationListes();
+								raz();
+							}
+							else 
+								JOptionPane.showMessageDialog(null,"L'insertion de l'atelier " + textLibelleAtelier.getText() + " ne s'est pas correctement déroulé, veuillez réessayer" 
+										,"Erreur : Ajout atelier",JOptionPane.INFORMATION_MESSAGE);
+						}
+						
+						// Cas Vacation
+						else if (rdbtnVacation.isSelected()) {
+							String strLabel[] = ((String)getcbx_AtelierVacation().getSelectedItem()).split(" ");
+							int idAtelier = Integer.parseInt(strLabel[0]);
+							
+							if (gestionBD.enregistrerVacation(idAtelier, 
+														 	gettextDateDebut().getText(), 
+														 	gettextDateFin().getText())) {
+								JOptionPane.showMessageDialog(null,"La vacation a bien été ajouté", "Ajout vacation",JOptionPane.INFORMATION_MESSAGE);
+								// Tiens à jour les listes déroulantes
+								raz();
+							}
+							else 
+								JOptionPane.showMessageDialog(null,"L'insertion de la vacation ne s'est pas correctement déroulé, veuillez réessayer" 
+										,"Erreur : Ajout vacation",JOptionPane.ERROR_MESSAGE);
+						}
+						
+						// Cas Theme
+						else {
+							String strLabel[] = ((String)getcbx_AtelierTheme().getSelectedItem()).split(" ");
+							int idAtelier = Integer.parseInt(strLabel[0]);
+							
+							if (gestionBD.enregistrerTheme(idAtelier, 
+														 	gettextIdLibelleTheme().getText() )) {
+								JOptionPane.showMessageDialog(null,"La thème " + gettextIdLibelleTheme().getText() + " a bien été ajouté", "Ajout thème",JOptionPane.INFORMATION_MESSAGE);
+								// Tiens à jour les listes déroulantes
+								raz();
+							}
+							else 
+								JOptionPane.showMessageDialog(null,"L'insertion du thème ne s'est pas correctement déroulé, veuillez réessayer" 
+										,"Erreur : Ajout thème",JOptionPane.ERROR_MESSAGE);
+						}
+					}
+				}
+			});
+			
 		}
 		return btnEnregistrer ;
 	}
 	
-	public JButton getbtnQuitter() {
-		if (btnQuitter == null) {
-			btnQuitter = new JButton("Quitter");
-			btnQuitter.setBounds(332, 289, 102, 47);
-		}
-		return btnQuitter;
+	// ################
+	// ### Methodes ###
+	// ################
+	public void raz() {
+		gettextLibelleAtelier().setText("");
+		gettextIdParticipant().setText("");
+		gettextNbPlaces().setText("");
+		
+		getcbx_AtelierVacation().setSelectedIndex(0);
+		gettextDateDebut().setText("");
+		gettextDateFin().setText("");
+		
+		getcbx_AtelierTheme().setSelectedIndex(0);
+		gettextIdLibelleTheme().setText("");
 	}
 	
 	/**
-	 * Create the panel.
+	 * Alimente les listes déroulantes des onglets Theme et Vacation
 	 */
-	public FenAjouter() {
-		setLayout(null);
+	public void alimentationListes() {
+		int taille = listeAtel.Nbelement();
 		
-		JPanel JContentPrincipal = new JPanel();
-		JContentPrincipal.setBounds(0, 0, 592, 509);
-		add(JContentPrincipal);
-		JContentPrincipal.setLayout(null);
-		JContentPrincipal.add(getjContentAjouterVacation());
-		JContentPrincipal.add(getjContentAjouterTheme());
+		getcbx_AtelierVacation().removeAllItems();
+		getcbx_AtelierTheme().removeAllItems();
 		
-		JContentPrincipal.add(getjContentChoixAjouter());
-		JContentPrincipal.add(getjContentAjouterAtelier());
-		
-		JContentPrincipal.add(getbtnAnnuler());
-		JContentPrincipal.add(getbtnEnregistrer());
-		JContentPrincipal.add(getbtnQuitter());
-		
-		regroupeboutton();
+		getcbx_AtelierVacation().setMaximumRowCount(taille);
+		getcbx_AtelierTheme().setMaximumRowCount(taille);
+		for (int ind = 0 ; ind < taille; ind ++ )
+		{
+			getcbx_AtelierVacation().addItem(listeAtel.elt(ind).getNoatelier()+ " " +listeAtel.elt(ind).getLibelleatelier());
+			getcbx_AtelierTheme().addItem(listeAtel.elt(ind).getNoatelier()+ " " +listeAtel.elt(ind).getLibelleatelier());
+		}
 	}
+	
+	public boolean verification() {
+		if (getrdbtnAtelier().isSelected()) {
+			if (gettextLibelleAtelier().getText().isEmpty() || gettextNbPlaces().getText().isEmpty()) {
+				JOptionPane.showMessageDialog(null,"Vous devez saisir le libellé et le nombre de places maximum de l'atelier", "",JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+		}
+		
+		if (getrdbtnVacation().isSelected()) {
+			if (gettextDateDebut().getText().isEmpty() || gettextDateFin().getText().isEmpty()) {
+				JOptionPane.showMessageDialog(null,"Vous devez saisir la date de début et de fin de la vacation", "",JOptionPane.ERROR_MESSAGE);
+				return false;
+			} else {
+				if(!gettextDateDebut().getText().matches("[0-9]+") || !gettextDateDebut().getText().matches("[0-9]+")); {
+					JOptionPane.showMessageDialog(null,"La date doit être du format YYYY-MM-JJ", "",JOptionPane.ERROR_MESSAGE);
+					return false;
+				}
+			}
+		}
+		
+		if (getrdbtnThme().isSelected()) {
+			if (gettextIdLibelleTheme().getText().isEmpty()) {
+				JOptionPane.showMessageDialog(null,"Vous devez saisir le libellé du thème", "",JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	
 }

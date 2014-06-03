@@ -10,13 +10,13 @@ public class GestVacationList {
 	public int Nbelement(){
 		return LesVacations.size();
 	}
-	
-	public void Ajouter (Vacation uneVacation)
+
+	public void Ajouter(Vacation uneVacation)
 	{
 		LesVacations.add(uneVacation);
 	}
 	
-	public Vacation elt (int ind)
+	public Vacation elt(int ind)
 	{
 		return LesVacations.get(ind);
 	}
@@ -26,7 +26,7 @@ public class GestVacationList {
 		int taille = LesVacations.size();
 		for (int ind = 0 ; ind < taille; ind ++ )
 		{
-			if (num.equals( LesVacations.get(ind).getNoatelier()))
+			if (num.equals(LesVacations.get(ind).getNovacation()))
 			{
 				trouve = ind;
 			}

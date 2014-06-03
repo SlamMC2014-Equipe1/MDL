@@ -11,16 +11,19 @@ import controle.GestionDemandes;
 import entite.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JOptionPane;
 
 public class FenModification extends JPanel {
-	private JTextField textDateDebut;
-	private JTextField textDateFin;
-	private JComboBox<String> cbx_ateliers;
-	private JComboBox<String> cbx_vacations;
-	private GestAtelierList listeAtel;
-	private GestVacationList listVac;
+	private JTextField textDateDebut = null;
+	private JTextField textDateFin = null;
+	private JComboBox<String> cbx_ateliers = null;
+	private JComboBox<String> cbx_vacations = null;
+	private GestAtelierList listeAtel = null;
+	private GestVacationList listVac = null;
 	private GestionDemandes gestionBD = new GestionDemandes();
-	private JButton btnQuitter;
+	private JButton btnAnnuler = null;
+	private JButton btnEnregistrer = null;
+	
 	
 	
 	/**
@@ -31,92 +34,161 @@ public class FenModification extends JPanel {
 		
 		JPanel JContentModification = new JPanel();
 		JContentModification.setBorder(new TitledBorder(null, "Modification", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		JContentModification.setBounds(10, 11, 394, 249);
+		JContentModification.setBounds(10, 11, 436, 249);
 		add(JContentModification);
 		JContentModification.setLayout(null);
 		
 		JLabel lblListeAteliers = new JLabel("Liste des ateliers");
-		lblListeAteliers.setBounds(10, 48, 105, 14);
+		lblListeAteliers.setBounds(10, 48, 153, 14);
 		JContentModification.add(lblListeAteliers);
 		
 		JContentModification.add(getCbx_ateliers());
 		
 		JLabel lblListeDesVacations = new JLabel("Liste des vacations");
-		lblListeDesVacations.setBounds(10, 93, 105, 14);
+		lblListeDesVacations.setBounds(10, 93, 153, 14);
 		JContentModification.add(lblListeDesVacations);
 		
-		//JContentModification.add(getCbx_vacations());
+		JContentModification.add(getCbx_vacations());
 		
 		JLabel lblDateDbut = new JLabel("Date de d\u00E9but");
-		lblDateDbut.setBounds(10, 131, 90, 14);
+		lblDateDbut.setBounds(10, 131, 153, 14);
 		JContentModification.add(lblDateDbut);
 		
 		JLabel lblDateDeFin = new JLabel("Date de fin");
-		lblDateDeFin.setBounds(10, 165, 105, 14);
+		lblDateDeFin.setBounds(10, 165, 153, 14);
 		JContentModification.add(lblDateDeFin);
 		
 
 		JContentModification.add(getTextDateDebut());
 		JContentModification.add(getTextDateFin());
-		this.add(getBtnquitter());
-
+		this.add(getBtnAnnuler());
+		this.add(getBtnEnregistrer());
 		
-		JButton btnEnregistrer = new JButton("Enregistrer");
-		btnEnregistrer.setBounds(228, 277, 89, 42);
-		add(btnEnregistrer);
 		
-		JButton btnAnnuler = new JButton("Annuler");
-		btnAnnuler.setBounds(142, 277, 89, 42);
-		add(btnAnnuler);
 	}
 	
 	private JComboBox<String> getCbx_ateliers() {
+		if (cbx_ateliers == null) {
 		cbx_ateliers = new JComboBox<String>();
-		cbx_ateliers.setBounds(125, 45, 243, 20);
-		listeAtel=gestionBD.chargeAtelier();
+		cbx_ateliers.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String strLabel[] = ((String)cbx_ateliers.getSelectedItem()).split(" ");
+				int idAtelier = Integer.parseInt(strLabel[0]);
+				listVac = gestionBD.chargeVacation(idAtelier);
+				int taille = listVac.Nbelement();
+				getCbx_vacations().removeAllItems();
+				for (int ind = 0; ind < taille; ind ++) {
+					String idvac = listVac.elt(ind).getNovacation().toString();
+					try {
+						getCbx_vacations().addItem(idvac);
+					}
+					catch (Exception ex) {
+						System.out.println(ex.getMessage());
+					}
+				}
+			}
+		});
+		cbx_ateliers.setBounds(173, 45, 243, 20);
+		listeAtel=gestionBD.chargeAtelierAvecVacation();
 		int taille = listeAtel.Nbelement();
 		cbx_ateliers.setMaximumRowCount(taille);
 		for (int ind = 0; ind < taille; ind ++) {
 			cbx_ateliers.addItem(listeAtel.elt(ind).getNoatelier()+ " " +listeAtel.elt(ind).getLibelleatelier());
 		}
-		cbx_ateliers.setSelectedIndex(0);
+		}
+		
 		return cbx_ateliers;
 	}
 	
 	private JComboBox<String> getCbx_vacations() {
-		cbx_vacations = new JComboBox<String>();
-		cbx_vacations.setBounds(125, 90, 243, 20);
-		char indexSelectionne = ((String)cbx_ateliers.getSelectedItem()).charAt(0);
-		listVac=gestionBD.chargeVacation(Character.getNumericValue(indexSelectionne));
-		int taille = listVac.Nbelement();
-		for (int ind = 0; ind < taille; ind ++) {
-			cbx_vacations.addItem(listVac.elt(ind).getNovacation().toString());
+		if(cbx_vacations == null) {
+			cbx_vacations = new JComboBox<String>();
+			cbx_vacations.setBounds(173, 90, 86, 20);
+			cbx_vacations.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					char idat = ((String)getCbx_ateliers().getSelectedItem()).charAt(0);
+					char idvac = cbx_vacations.getSelectedItem() == null ? 'v' : ((String)cbx_vacations.getSelectedItem()).charAt(0);
+					
+					if (idvac != 'v') {
+						Vacation laVac = gestionBD.chargeDate(Character.getNumericValue(idat), Character.getNumericValue(idvac));
+					
+							String dated = laVac.getdated();
+							String datef = laVac.getdatef();		
+							try {
+								getTextDateDebut().setText(dated);
+								getTextDateFin().setText(datef);
+							}
+							catch (Exception ex) {
+								System.out.println(ex.getMessage());
+							}
+						}
+					}
+			});
 		}
 		return cbx_vacations;
 	}
 	
 	private JTextField getTextDateDebut() {
+		if (textDateDebut==null) {
 		textDateDebut = new JTextField();
-		textDateDebut.setBounds(125, 128, 86, 20);
+		textDateDebut.setBounds(173, 128, 86, 20);
 		textDateDebut.setColumns(10);
+		}
 		return textDateDebut;
 	}
 	
 	private JTextField getTextDateFin() {
+		if (textDateFin==null) {
 		textDateFin = new JTextField();
-		textDateFin.setBounds(125, 162, 86, 20);
+		textDateFin.setBounds(173, 162, 86, 20);
 		textDateFin.setColumns(10);
+		}
 		return textDateFin;
 	}
 	
-	private JButton getBtnquitter() {
-		btnQuitter = new JButton("Quitter");
-		btnQuitter.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+	private JButton getBtnAnnuler() { 
+		if (btnAnnuler==null) {
+		btnAnnuler = new JButton("Annuler");
+		btnAnnuler.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				getCbx_ateliers().setSelectedIndex(0);
+				getCbx_vacations().setSelectedIndex(0);	
+				textDateDebut.setText("");
+				textDateFin.setText("");
 			}
 		});
-		btnQuitter.setBounds(315, 277, 89, 42);
-		return btnQuitter;
+		btnAnnuler.setBounds(242, 277, 99, 42);
+		}
+		return btnAnnuler;
+	}
+	
+	private JButton getBtnEnregistrer() {
+		if (btnEnregistrer==null){
+		btnEnregistrer = new JButton("Enregistrer");
+		btnEnregistrer.setBounds(341, 277, 105, 42);
+		btnEnregistrer.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (getTextDateDebut().getText().equals("") || getTextDateFin().getText().equals("") || 
+					!getTextDateDebut().getText().matches("[0-9-/]*" )|| !getTextDateFin().getText().matches("[0-9-/]*" ))
+				{
+					JOptionPane.showMessageDialog(null,"Impossible de faire la modification, vérifiez les champs !","Erreur",JOptionPane.ERROR_MESSAGE);
+				}
+				else 
+				{
+					String idat = Character.toString(((String)getCbx_ateliers().getSelectedItem()).charAt(0));	
+					String idvac = Character.toString(((String)getCbx_vacations().getSelectedItem()).charAt(0));		
+					String dated = getTextDateDebut().getText();
+					String datef = getTextDateFin().getText();	
+					gestionBD.majVacation(idat, idvac, dated, datef);
+					textDateDebut.setText("");
+					textDateFin.setText("");
+					getCbx_ateliers().setSelectedIndex(0);
+					getCbx_vacations().setSelectedIndex(0);
+					JOptionPane.showMessageDialog(null,"Modification effectuée");
+				}
+			}
+		});
+		}
+		return btnEnregistrer;
 	}
 }

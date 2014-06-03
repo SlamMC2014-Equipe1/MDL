@@ -28,11 +28,11 @@ public class Atelier
 		return maxplace;
 	}
 	public String req_InsertAtelier() {
-		return "insert into Atelier (idatelier, idparticipant, libelleatelier, nbplacesmaxi)" +
-				"values ('"+this.getNoatelier()+"', '"+this.getNointervenant()+"','"+this.getLibelleatelier()+"','"+this.getMaxplace()+"')"; 
+		return "EXEC SP_INSERT_ATELIER @IDPARTICIPANT = " + (this.getNointervenant() == null ? "null" : this.getNointervenant()) + ", " 
+									+ "@LIBELLEATELIER = '" + this.getLibelleatelier() + "', "
+									+ "@NBPLACESMAXI = " + this.getMaxplace() + ";"; 
 		
 	}
-
 }
 
 

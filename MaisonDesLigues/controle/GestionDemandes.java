@@ -7,7 +7,9 @@ import java.sql.Date;
 
 import javax.swing.JOptionPane;
 
+import sun.awt.windows.ThemeReader;
 import entite.*;
+
 import java.util.ArrayList;
 
 public class GestionDemandes
@@ -55,6 +57,48 @@ public class GestionDemandes
 		String requete2= lLicencie.req_InsertInscrire(); 
 		resultat = executeReq(requete2);
 		return resultat;
+	}
+	
+	public boolean enregistrerAtelier(Integer wnoint,String wlib, Integer wnbplace){
+		Atelier lAtelier = new Atelier(null, wnoint, wlib, wnbplace);
+		String requete= lAtelier.req_InsertAtelier();
+		return executeReq(requete);
+	}
+	
+	public boolean enregistrerVacation(Integer wnoat, String wdatedeb, String wdatefin){
+		try {
+			String requete = "SELECT MAX(IDVACATION) + 1 FROM Vacation WHERE IDATELIER = " + wnoat; 
+			Statement state = ControleConnexion.getControleConnexion().getConnexion().createStatement();
+			ResultSet result=state.executeQuery(requete);
+			
+			if (!result.next())
+				return false;
+			
+			Vacation lVacation = new Vacation(wnoat.toString(), result.getString(1), wdatedeb, wdatefin);
+			requete= lVacation.req_InsertVacation();
+			return executeReq(requete);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public boolean enregistrerTheme(Integer wnoat, String wlibtheme) {
+		try {
+			String requete = "SELECT MAX(IDTHEME) + 1 FROM Theme WHERE IDATELIER = " + wnoat; 
+			Statement state = ControleConnexion.getControleConnexion().getConnexion().createStatement();
+			ResultSet result=state.executeQuery(requete);
+			
+			if (!result.next())
+				return false;
+			
+			Theme lTheme = new Theme(wnoat, result.getInt(1), wlibtheme);
+			requete = lTheme.req_InsertTheme();
+			return executeReq(requete);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	public boolean enregistrerAccompagnant(Integer idParticipant, Integer idRestauration)
@@ -263,6 +307,38 @@ public class GestionDemandes
 			return null;
 		}
 	}
+	
+	public GestAtelierList chargeAtelierAvecVacation(){
+		String requete="select * from atelier where idatelier in (select idatelier from Vacation) ";
+		GestAtelierList  Listedesateliers = new GestAtelierList();
+		Atelier unatelier;
+		try
+		{
+			Statement state = ControleConnexion.getControleConnexion().getConnexion().createStatement();
+			ResultSet result=state.executeQuery(requete);
+			if(!result.next())
+				return null;
+			do {
+				int idAtelier = result.getInt(1);
+				int idParticipant = result.getInt(2);
+				String libelleAtelier = result.getString(3);
+				int nbPlacesMaxi = result.getInt(4);
+				
+				unatelier = new Atelier(idAtelier, idParticipant, libelleAtelier, nbPlacesMaxi);
+				Listedesateliers.Ajouter(unatelier);
+			}
+			while (result.next());
+			state.close();
+			return Listedesateliers;
+		}
+		catch (SQLException e)
+		{
+			JOptionPane.showMessageDialog(null, "Erreur sur la requete: "+e.getMessage(), "ALERTE"
+					, JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+			return null;
+		}
+	}
 	public boolean majAtelier(GestAtelierList liste){
 		// Recopie de la collection atelier dans la table atelier
 		for (int i=0;i<liste.Nbelement();i++) {
@@ -275,8 +351,8 @@ public class GestionDemandes
 		return true;
 	}
 	
-	public GestVacationList chargeVacation(int idat){
-		String requete="select idvacation from Vacation where idatelier="+idat;
+	public Vacation chargeDate(int idat, int idvac){
+		String requete="select * from Vacation where idatelier ='"+ idat +"' and idvacation='"+idvac+"'";
 		GestVacationList Listedesvacations = new GestVacationList();
 		Vacation uneVacation;
 		try
@@ -286,7 +362,34 @@ public class GestionDemandes
 			if(!result.next())
 				return null;
 			do {
-				uneVacation = new Vacation(result.getInt(1), result.getInt(2), result.getString(3), result.getString(4));
+				uneVacation = new Vacation(result.getString(1), result.getString(2), result.getString(3), result.getString(4));
+				Listedesvacations.Ajouter(uneVacation);
+			}
+			while (result.next());
+			state.close();
+			return uneVacation;
+		}
+		catch (SQLException e)
+		{
+			JOptionPane.showMessageDialog(null, "Erreur sur la requete: "+e.getMessage(), "ALERTE"
+					, JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public GestVacationList chargeVacation(int idat){
+		String requete="select * from Vacation where idatelier="+idat;
+		GestVacationList Listedesvacations = new GestVacationList();
+		Vacation uneVacation;
+		try
+		{
+			Statement state = ControleConnexion.getControleConnexion().getConnexion().createStatement();
+			ResultSet result=state.executeQuery(requete);
+			if(!result.next())
+				return null;
+			do {
+				uneVacation = new Vacation(result.getString(1), result.getString(2), result.getString(3), result.getString(4));
 				Listedesvacations.Ajouter(uneVacation);
 			}
 			while (result.next());
@@ -300,6 +403,15 @@ public class GestionDemandes
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public boolean majVacation(String idat, String idvac, String dated, String datef){
+			String requete = "update vacation  set dateheuredebut = '"+ dated+"', dateheurefin = '"+ datef+"' where idatelier ='"+ idat +"' and idvacation='"+idvac+"'";
+			if (!executeReq(requete))
+			{
+				return false;
+			}
+		return true;
 	}
 	
 	public GestQualiteList chargeQualite(){
@@ -431,4 +543,6 @@ public class GestionDemandes
 		   }
 		return res;
 		}
+	
+	
 }

@@ -40,6 +40,8 @@ import javax.swing.UIManager;
 
 public class JContentInscription extends JPanel {
 	private GestionDemandes gestionBD = new GestionDemandes();
+	private GestAtelierList listeAtel;
+	
 	private JPanel jContentChoixParticipant = null;
 	private JPanel jContentIdentite = null;
 	private JPanel jContentInscriptionIntervenant= null;
@@ -48,7 +50,6 @@ public class JContentInscription extends JPanel {
 	private JPanel jContentNuitée = null;
 	private JPanel jContentAccompagnant = null;
 	private JPanel jContentHotel = null;
-	private GestAtelierList listeAtel;
 	private ButtonGroup groupeboutons = new ButtonGroup(); 
 	private JRadioButton radiobtn_Intervenant = null;
 	private JRadioButton radiobtn_licencie = null;
