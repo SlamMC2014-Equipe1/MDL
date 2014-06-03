@@ -234,6 +234,38 @@ public class GestionDemandes
 			return null;
 		}
 	}
+	
+	public GestAtelierList chargeAtelierAvecVacation(){
+		String requete="select * from atelier where idatelier in (select idatelier from Vacation) ";
+		GestAtelierList  Listedesateliers = new GestAtelierList();
+		Atelier unatelier;
+		try
+		{
+			Statement state = ControleConnexion.getControleConnexion().getConnexion().createStatement();
+			ResultSet result=state.executeQuery(requete);
+			if(!result.next())
+				return null;
+			do {
+				int idAtelier = result.getInt(1);
+				int idParticipant = result.getInt(2);
+				String libelleAtelier = result.getString(3);
+				int nbPlacesMaxi = result.getInt(4);
+				
+				unatelier = new Atelier(idAtelier, idParticipant, libelleAtelier, nbPlacesMaxi);
+				Listedesateliers.Ajouter(unatelier);
+			}
+			while (result.next());
+			state.close();
+			return Listedesateliers;
+		}
+		catch (SQLException e)
+		{
+			JOptionPane.showMessageDialog(null, "Erreur sur la requete: "+e.getMessage(), "ALERTE"
+					, JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+			return null;
+		}
+	}
 	public boolean majAtelier(GestAtelierList liste){
 		// Recopie de la collection atelier dans la table atelier
 		for (int i=0;i<liste.Nbelement();i++) {

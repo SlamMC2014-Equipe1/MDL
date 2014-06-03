@@ -89,7 +89,7 @@ public class FenModification extends JPanel {
 			}
 		});
 		cbx_ateliers.setBounds(173, 45, 243, 20);
-		listeAtel=gestionBD.chargeAtelier();
+		listeAtel=gestionBD.chargeAtelierAvecVacation();
 		int taille = listeAtel.Nbelement();
 		cbx_ateliers.setMaximumRowCount(taille);
 		for (int ind = 0; ind < taille; ind ++) {
@@ -169,7 +169,7 @@ public class FenModification extends JPanel {
 		btnEnregistrer.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (getTextDateDebut().getText().equals("") || getTextDateFin().getText().equals("") || 
-					!getTextDateDebut().getText().matches("[0-9]*" )|| !getTextDateFin().getText().matches("[0-9]*" ))
+					!getTextDateDebut().getText().matches("[0-9-/]*" )|| !getTextDateFin().getText().matches("[0-9-/]*" ))
 				{
 					JOptionPane.showMessageDialog(null,"Impossible de faire la modification, vérifiez les champs !","Erreur",JOptionPane.ERROR_MESSAGE);
 				}
