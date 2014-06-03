@@ -72,8 +72,9 @@ public class FenModification extends JPanel {
 		cbx_ateliers = new JComboBox<String>();
 		cbx_ateliers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				char idat = ((String)cbx_ateliers.getSelectedItem()).charAt(0);
-				listVac=gestionBD.chargeVacation(Character.getNumericValue(idat));
+				String strLabel[] = ((String)cbx_ateliers.getSelectedItem()).split(" ");
+				int idAtelier = Integer.parseInt(strLabel[0]);
+				listVac = gestionBD.chargeVacation(Character.getNumericValue(idAtelier));
 				int taille = listVac.Nbelement();
 				getCbx_vacations().removeAllItems();
 				for (int ind = 0; ind < taille; ind ++) {

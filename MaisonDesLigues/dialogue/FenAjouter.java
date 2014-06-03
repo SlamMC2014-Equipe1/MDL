@@ -392,7 +392,8 @@ public class FenAjouter extends JPanel {
 						
 						// Cas Vacation
 						else if (rdbtnVacation.isSelected()) {
-							int idAtelier = Character.getNumericValue(((String)getcbx_AtelierVacation().getSelectedItem()).charAt(0));
+							String strLabel[] = ((String)getcbx_AtelierVacation().getSelectedItem()).split(" ");
+							int idAtelier = Integer.parseInt(strLabel[0]);
 							
 							if (gestionBD.enregistrerVacation(idAtelier, 
 														 	gettextDateDebut().getText(), 
@@ -408,7 +409,8 @@ public class FenAjouter extends JPanel {
 						
 						// Cas Theme
 						else {
-							int idAtelier = Character.getNumericValue(((String)getcbx_AtelierTheme().getSelectedItem()).charAt(0));
+							String strLabel[] = ((String)getcbx_AtelierTheme().getSelectedItem()).split(" ");
+							int idAtelier = Integer.parseInt(strLabel[0]);
 							
 							if (gestionBD.enregistrerTheme(idAtelier, 
 														 	gettextIdLibelleTheme().getText() )) {
