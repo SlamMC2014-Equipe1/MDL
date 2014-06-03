@@ -75,7 +75,6 @@ public class JContentInscription extends JPanel {
 	private JLabel jLabel_atelier = null;
 	private JLabel jlabel_idnuit_un = null;
 	private JLabel jlabel_idnuit_deux = null;
-	private JButton btn_embaucher = null;
 	private JButton btn_ok = null;
 	private JButton btn_annuler = null;
 	private JTextField txt_mat = null;
@@ -134,18 +133,16 @@ public class JContentInscription extends JPanel {
 	 */
 	public JContentInscription() {
 		setLayout(null);
-		setSize(960, 969);
-		add(getjContentInscriptionLicencie());
+		setSize(1100, 969);
 		add(getjContentInscriptionBenevole());
+		add(getjContentInscriptionLicencie());
 		add(getjContentInscriptionIntervenant());
 		add(getjContentChoixParticipant());
 		add(getjContentIdentite());
-		add(getBtn_embaucher());
 		add(getBtn_ok());
 		add(getBtn_annuler());
 		add(getBtn_Rechercher());
 		regroupeboutons();
-		btn_embaucher.setEnabled(false);
 		Btn_Rechercher.setEnabled(false);
 		btn_ok.setVisible(true);
 		btn_annuler.setVisible(true);
@@ -310,24 +307,41 @@ public class JContentInscription extends JPanel {
 	{
 		txt_nom.setText("");
 		txt_prenom.setText("");
-		txt_adr1.setText(" ");
-		txt_adr2.setText(" ");
-		txt_cp.setText(" ");
-		txt_ville.setText(" ");
-		txt_mail.setText(" ");
+		txt_adr1.setText("");
+		txt_adr2.setText("");
+		txt_cp.setText("");
+		txt_ville.setText("");
+		txt_mail.setText("");
 		txt_dtenais.setText("__/__/____");
 		txt_clewifi.setText("");
-		txt_nolicence.setText(" ");
+		txt_nolicence.setText("");
+		txt_nolicence_B.setText("");
+		montantCheque1.setText("");
+		montantCheque2.setText("");
+		numeroCheque1.setText("");
+		numeroCheque2.setText("");
+		samediDejeuner.setSelected(false);
+		samediDiner.setSelected(false);
+		dimancheDejeuner.setSelected(false);
+		cbxJour1.setSelected(false);
+		cbxJour2.setSelected(false);
+		cbx_qualite_B.setSelectedIndex(0);
+		check_Nuitdu12.setSelected(false);
+		check_Nuitdu13.setSelected(false);
 		java.util.Date maDate=new java.util.Date();
 		SimpleDateFormat dateStandard = new SimpleDateFormat("dd/MM/yyyy");
 		txt_dteinsc.setText(dateStandard.format(maDate));
 		txt_dtearr.setText(dateStandard.format(maDate));
-		btn_embaucher.setEnabled(true);
-		Btn_Rechercher.setEnabled(true);
-		btn_ok.setVisible(false);
-		btn_annuler.setVisible(false);
+		Btn_Rechercher.setEnabled(false);
+		btn_ok.setVisible(true);
+		btn_annuler.setVisible(true);
 		estRechercher=false;
 		regroupeboutons();
+		listeChoix.clear();
+		nombreDeChoix = 0;
+		for(JCheckBox cbx : listeAteliersCbx) {
+			cbx.setSelected(false);
+		}
 		
 	}
 	
@@ -408,7 +422,7 @@ public class JContentInscription extends JPanel {
 	private JPanel getjContentInscriptionLicencie() {
 		if (jContentInscriptionLicencie == null) {
 			jContentInscriptionLicencie = new JPanel();
-			jContentInscriptionLicencie.setBounds(10, 300, 926, 490);
+			jContentInscriptionLicencie.setBounds(10, 300, 1052, 490);
 			jContentInscriptionLicencie.setLayout(null);
 			jContentInscriptionLicencie.setLayout(null);
 			Border Bord = BorderFactory.createTitledBorder(" Complément sur l'inscription du Licencié ");
@@ -473,7 +487,7 @@ public class JContentInscription extends JPanel {
 		if(jContentPaiement==null){
 			jContentPaiement = new JPanel();
 			jContentPaiement.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Paiement", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-			jContentPaiement.setBounds(19, 116, 451, 101);
+			jContentPaiement.setBounds(19, 116, 427, 101);
 			jContentPaiement.setLayout(null);
 			jContentPaiement.add(getUnPaiement());
 			jContentPaiement.add(getDeuxPaiement());
@@ -519,7 +533,7 @@ public class JContentInscription extends JPanel {
 	private JLabel getNum2(){
 		if(num2==null){
 			num2 = new JLabel("Num\u00E9ro");
-			num2.setBounds(274, 50, 46, 14);
+			num2.setBounds(229, 50, 46, 14);
 		}
 		return num2;
 	}
@@ -527,7 +541,7 @@ public class JContentInscription extends JPanel {
 	private JLabel getMont2(){
 		if(mont2==null){
 			mont2 = new JLabel("Montant");
-			mont2.setBounds(274, 73, 46, 14);
+			mont2.setBounds(229, 73, 46, 14);
 		}
 		return mont2;
 	}
@@ -557,7 +571,7 @@ public class JContentInscription extends JPanel {
 	
 	private JRadioButton getDeuxPaiement(){
 		if (deuxPaiement==null){
-			deuxPaiement = new JRadioButton("2 ch\u00E8que");
+			deuxPaiement = new JRadioButton("2 ch\u00E8ques");
 			deuxPaiement.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					if(deuxPaiement.isSelected()){
@@ -598,7 +612,7 @@ public class JContentInscription extends JPanel {
 	private JTextField getNumeroCheque2(){
 		if(numeroCheque2==null){
 			numeroCheque2 = new JTextField();
-			numeroCheque2.setBounds(335, 47, 86, 20);
+			numeroCheque2.setBounds(290, 47, 86, 20);
 			numeroCheque2.setColumns(10);
 		}
 		return numeroCheque2;
@@ -606,7 +620,7 @@ public class JContentInscription extends JPanel {
 	private JTextField getMontantCheque2(){
 		if(montantCheque2==null){
 			montantCheque2 = new JTextField();
-			montantCheque2.setBounds(335, 70, 86, 20);
+			montantCheque2.setBounds(290, 70, 86, 20);
 			montantCheque2.setColumns(10);
 		}
 		return montantCheque2;
@@ -694,7 +708,7 @@ public class JContentInscription extends JPanel {
 			jContentAccompagnant.setLayout(null);
 			Border Bord = BorderFactory.createTitledBorder(" Accompagnant ");
 			jContentAccompagnant.setBorder(Bord);
-			jContentAccompagnant.setBounds(new Rectangle(463, 222, 277, 257));
+			jContentAccompagnant.setBounds(new Rectangle(456, 222, 277, 257));
 			
 			jContentAccompagnant.add(getRadiobtn_AccompagnantOui());
 			jContentAccompagnant.add(getRadiobtn_AccompagnantNon());
@@ -940,30 +954,11 @@ public class JContentInscription extends JPanel {
 		}
 		return radiobtn_licencie;
 	}
-	/*** This method initializes btn_embaucher	@return javax.swing.JButton	 */
-	private JButton getBtn_embaucher() {
-		if (btn_embaucher == null) {
-			btn_embaucher = new JButton();
-			btn_embaucher.setBounds(510, 801, 110, 40);
-			btn_embaucher.setText("Etre Benevole");
-			btn_embaucher.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					regroupeboutons();
-					btn_embaucher.setEnabled(false);
-					Btn_Rechercher.setEnabled(false);
-					btn_ok.setVisible(true);
-					btn_annuler.setVisible(true);
-		
-				}
-			});
-		}
-		return btn_embaucher;
-	}
 	/*** This method initializes btn_ok	@return javax.swing.JButton	*/
 	private JButton getBtn_ok() {
 		if (btn_ok == null) {
 			btn_ok = new JButton();
-			btn_ok.setBounds(390, 801, 110, 40);
+			btn_ok.setBounds(518, 801, 110, 40);
 			btn_ok.setText("Enregistrer");
 			btn_ok.setVisible(false);
 			btn_ok.addActionListener(new java.awt.event.ActionListener() {
@@ -991,7 +986,6 @@ public class JContentInscription extends JPanel {
 						}
 						
 						raz();
-						btn_embaucher.setEnabled(false);
 						Btn_Rechercher.setEnabled(false);
 						btn_ok.setVisible(true);
 						btn_annuler.setVisible(true);
@@ -1060,7 +1054,7 @@ public class JContentInscription extends JPanel {
 	private JButton getBtn_annuler() {
 		if (btn_annuler == null) {
 			btn_annuler = new JButton();
-			btn_annuler.setBounds(270, 801, 110, 40);
+			btn_annuler.setBounds(398, 801, 110, 40);
 			btn_annuler.setText("Annuler");
 			btn_annuler.setVisible(false);
 			btn_annuler.addActionListener(new java.awt.event.ActionListener() {
@@ -1343,12 +1337,11 @@ public class JContentInscription extends JPanel {
 	private JButton getBtn_Rechercher() {
 		if (Btn_Rechercher == null) {
 			Btn_Rechercher = new JButton();
-			Btn_Rechercher.setBounds(150, 801, 110, 40);
+			Btn_Rechercher.setBounds(278, 801, 110, 40);
 			Btn_Rechercher.setText("Rechercher");
 			Btn_Rechercher.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					estRechercher=true;
-					btn_embaucher.setEnabled(false);
 					Btn_Rechercher.setEnabled(false);
 					btn_ok.setVisible(true);
 					btn_annuler.setVisible(true);

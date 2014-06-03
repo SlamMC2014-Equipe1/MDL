@@ -37,7 +37,7 @@ public class FenParticipant extends JFrame {
 	
 	/** This method initializes this @return void */
 	private void initialize() {
-		this.setSize(810, 920);
+		this.setSize(1100, 920);
 		setJMenuBar(getMenuBarPrincipal());
 		this.setContentPane(getJContentInscription());
 		this.setTitle("Maison des Ligues : Inscription ");
@@ -98,7 +98,7 @@ public class FenParticipant extends JFrame {
 	}
 	private JMenu getMnAtelier() {
 		if (mnAtelier == null) {
-			mnAtelier = new JMenu("Atelier");
+			mnAtelier = new JMenu("Activités");
 			
 			JMenuItem mntmAjout = new JMenuItem("Ajout");
 			mnAtelier.add(mntmAjout);
